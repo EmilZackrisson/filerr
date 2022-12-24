@@ -101,7 +101,7 @@
       <h1>Filerr</h1>
       <div class="d-flex justify-content-end align-items-center">
         {#if pb.authStore.isValid}
-          <p>Du: {pb.authStore.model?.email}</p>
+          <p>{pb.authStore.model?.email}</p>
           <button on:click={logout} class="btn btn-primary">Logga ut</button>
         {/if}
       </div>

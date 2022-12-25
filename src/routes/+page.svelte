@@ -1,13 +1,12 @@
 <script lang="ts">
 	import PocketBase, { Record } from 'pocketbase';
 	import Login from '$lib/Login.svelte';
-  import moment from 'moment';
+	import RequestCard from '$lib/RequestCard.svelte';
 
 	const pb = new PocketBase('https://filerr.local.emilzackrisson.se');
 
 	console.log('Logged In: ', pb.authStore.isValid);
 
-  moment.locale('sv');
 
 	let requests: any = [];
 	let admin = false;
@@ -51,8 +50,7 @@
 			.getFullList(50 /* batch size */, {
 				sort: '-created',
 				expand: 'user',
-        filter: "completed = false"
-        
+				filter: 'completed = false'
 			})
 			.then((records) => {
 				requests = records;
@@ -86,10 +84,14 @@
 			type: request.type
 		};
 
-    const record = await pb.collection('requests').update(id, data).then(() => {
-      getRequests();
-    })
+		const record = await pb
+			.collection('requests')
+			.update(id, data)
+			.then(() => {
+				getRequests();
+			});
 	}
+
 </script>
 
 <main>
@@ -128,44 +130,15 @@
 				{#await requests}
 					<h3>Laddar...</h3>
 				{:then requests}
-          {#if requests.length === 0}
-          <div class="text-center">
-            <h3>Alla ansökningar är klara 👍</h3>
-
-          </div>
-          {/if}
-					{#each requests as request}
-            {#if request.completed === false}
-						<div class="card p-3">
-              <div class="d-flex justify-content-between">
-                <h5>{request.file}</h5>
-                <p>{moment(request.created).fromNow()}</p>
-              </div>
-							
-							<p>Från användare: {request.expand.user.name}</p>
-              <p>Typ: {request.type}</p>
-              
-              <!-- <p>Klar: {request.completed}</p> -->
-							<div>
-								{#if request.user === pb.authStore.model?.id || admin}
-									<button
-										class="btn btn-danger"
-										on:click={() => {
-											removeRequest(request.id);
-										}}>Ta bort</button
-									>
-								{/if}
-								{#if admin}
-									<button
-										class="btn btn-success"
-										on:click={() => {
-											markCompleted(request, request.id);
-										}}>Markera som klar</button
-									>
-								{/if}
-							</div>
+					{#if requests.length === 0}
+						<div class="text-center">
+							<h3>Alla ansökningar är klara 👍</h3>
 						</div>
-            {/if}
+					{/if}
+					{#each requests as request}
+						{#if request.completed === false}
+							<RequestCard request={request} admin={admin}/>
+						{/if}
 					{/each}
 				{/await}
 			</div>

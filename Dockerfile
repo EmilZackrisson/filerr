@@ -1,15 +1,9 @@
-# Dockerfile
-
 FROM node:16-alpine
-
-RUN npm install
-
 WORKDIR /app
-COPY package.json pnpm-lock.yaml ./
+COPY package.json package-lock.json ./
 RUN npm install
-
 COPY . .
-RUN npm run build
-
-EXPOSE 3000
+RUN npm run build && npm prune --production
+ENV PORT 5050
+EXPOSE 5050
 CMD ["node", "build"]

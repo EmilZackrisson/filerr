@@ -5,8 +5,7 @@
 	import Users from '$lib/Users.svelte';
 	import Navbar from '$lib/Navbar.svelte';
 
-	import { PUBLIC_URL } from '$env/static/public';
-	const pb = new PocketBase(PUBLIC_URL);
+	const pb = new PocketBase('https://filerr.emilzackrisson.se');
 
 	let admin = false;
 	let records: any = [];

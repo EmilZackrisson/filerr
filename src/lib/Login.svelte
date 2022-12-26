@@ -1,7 +1,7 @@
 <script lang="ts">
 	import PocketBase, { Record } from 'pocketbase';
-
-	const pb = new PocketBase('https://filerr.local.emilzackrisson.se');
+	import { PUBLIC_URL } from '$env/static/public';
+	const pb = new PocketBase(PUBLIC_URL);
 
 	console.log('Logged In: ', pb.authStore.isValid);
 

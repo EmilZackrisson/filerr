@@ -4,6 +4,8 @@ on:
   # run it on push to the default repository branch
   push:
     branches: [master]
+    paths-ignore:
+      - 'nginx/**'
 
 jobs:
   # define job to build and publish docker image

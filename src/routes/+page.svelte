@@ -4,7 +4,9 @@
 	import RequestCard from '$lib/RequestCard.svelte';
 	import Navbar from '$lib/Navbar.svelte';
 
-	const pb = new PocketBase('https://filerr.emilzackrisson.se');
+	import publicUrl from '$lib/publicUrl';
+
+	const pb = new PocketBase(publicUrl);
 
 	console.log('Logged In: ', pb.authStore.isValid);
 

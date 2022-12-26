@@ -9,7 +9,7 @@ const config = {
 
 	kit: {
 		adapter: adapter({ out: 'build' }),
-		alias: { lib: './src/lib' }
+		alias: { lib: './src/lib', static: './src/static' }
 	}
 };
 

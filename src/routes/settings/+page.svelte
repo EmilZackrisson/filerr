@@ -3,6 +3,7 @@
 	import Login from '$lib/Login.svelte';
 	import NewUser from '$lib/NewUser.svelte';
 	import Users from '$lib/Users.svelte';
+	import Navbar from '$lib/Navbar.svelte';
 
 	const pb = new PocketBase('https://filerr.local.emilzackrisson.se');
 
@@ -35,23 +36,10 @@
 				console.log('Got user', user);
 			});
 	}
-
-	
 </script>
 
 <main>
-	<!-- Header -->
-	<div class="container text-center">
-		<div class="d-flex justify-content-between flex-row">
-			<h3>Filerr</h3>
-			<div class="d-flex justify-content-end align-items-center">
-				{#if pb.authStore.isValid}
-					<p>{pb.authStore.model?.email}</p>
-					<button on:click={logout} class="btn btn-primary">Logga ut</button>
-				{/if}
-			</div>
-		</div>
-	</div>
+	<Navbar />
 
 	<header class="container text-center">
 		<h1>Inställningar</h1>

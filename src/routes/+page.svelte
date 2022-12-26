@@ -2,11 +2,11 @@
 	import PocketBase, { Record } from 'pocketbase';
 	import Login from '$lib/Login.svelte';
 	import RequestCard from '$lib/RequestCard.svelte';
+	import Navbar from '$lib/Navbar.svelte';
 
 	const pb = new PocketBase('https://filerr.local.emilzackrisson.se');
 
 	console.log('Logged In: ', pb.authStore.isValid);
-
 
 	let requests: any = [];
 	let admin = false;
@@ -91,23 +91,10 @@
 				getRequests();
 			});
 	}
-
 </script>
 
 <main>
-	<!-- Header -->
-	<div class="container text-center">
-		<div class="d-flex justify-content-between flex-row">
-			<h1>Filerr</h1>
-			<div class="d-flex justify-content-end align-items-center gap-3">
-				{#if pb.authStore.isValid}
-					<p>{pb.authStore.model?.email}</p>
-					<button on:click={logout} class="btn btn-primary">Logga ut</button>
-				{/if}
-			</div>
-		</div>
-	</div>
-
+	<Navbar />
 	{#if pb.authStore.isValid}
 		<div class="container-sm card mt-3">
 			<h3>Ansök om fil</h3>
@@ -137,7 +124,7 @@
 					{/if}
 					{#each requests as request}
 						{#if request.completed === false}
-							<RequestCard request={request} admin={admin}/>
+							<RequestCard {request} {admin} />
 						{/if}
 					{/each}
 				{/await}

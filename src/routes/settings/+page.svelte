@@ -8,9 +8,6 @@
 
 	const pb = new PocketBase(publicUrl);
 
-	let admin = false;
-	let records: any = [];
-	var user = getUser();
 	var userId = pb.authStore.model?.id;
 
 	console.log('Logged In: ', pb.authStore.isValid);
@@ -18,19 +15,6 @@
 	if (pb.authStore.isValid) {
 		console.log('User: ', pb.authStore.model?.id);
 		userId = pb.authStore.model?.id;
-	}
-
-	async function getUser() {
-		if (userId === undefined) {
-			console.log('User is undefined');
-			return;
-		}
-		const gotUser = await pb
-			.collection('users')
-			.getOne(userId)
-			.then((user) => {
-				console.log('Got user', user);
-			});
 	}
 </script>
 

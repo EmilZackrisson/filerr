@@ -1,6 +1,7 @@
 <script lang="ts">
 	import PocketBase, { Record } from 'pocketbase';
 	import publicUrl from '$lib/publicUrl';
+	// import { getAllUsers } from '$lib/users';
 
 	const pb = new PocketBase(publicUrl);
 

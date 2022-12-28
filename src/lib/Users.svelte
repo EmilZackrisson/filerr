@@ -5,6 +5,7 @@
 	const pb = new PocketBase(publicUrl);
 
 	var admin = false;
+	let vpnUrl: string;
 
 	let users: any = getAllUsers();
 
@@ -21,14 +22,20 @@
 				sort: '-created'
 			})
 			.then((users) => {
+				users.map((user: any) => {
+					const url = pb.getFileUrl(user, user.vpnConfig);
+					const avatar = pb.getFileUrl(user, user.avatar);
+					user.avatar = avatar;
+					user.vpnConfig = url;
+				});
+				console.log(users);
 				return users;
 			});
 	}
 </script>
 
 <main>
-	<div class="container-sm card mt-4">
-		<h4 class="text-center mt-3">Användare</h4>
+	<div class="">
 		{#await users}
 			<div class="text-center">
 				<h3>Laddar användare...</h3>
@@ -39,7 +46,11 @@
 					<h5>{user.name} - {user.username}</h5>
 					<p>{user.email}</p>
 					<p>Skapad: {user.created}</p>
-					<button class="btn btn-danger">Ta bort</button>
+					{#if user.vpnConfig.includes('.zip')}
+						<div>
+							<a href={user.vpnConfig}> Ladda ner VPN konfiguration </a>
+						</div>
+					{/if}
 				</div>
 			{/each}
 		{:catch error}

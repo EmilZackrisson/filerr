@@ -35,13 +35,13 @@
 			.then(() => {
 				// console.log('User created');
 				alert('Användare skapad');
+				window.location.reload();
 			});
 	}
 </script>
 
 <main>
-	<div class="container-sm card mt-4">
-		<h4 class="text-center mt-3">Skapa användare</h4>
+	<div class="">
 		<form on:submit|preventDefault={createUser} class="m-4 d-flex flex-column">
 			<label class="form-label" for="name">Namn</label>
 			<input class="form-control" type="text" name="name" id="namn" />

@@ -20,11 +20,6 @@
 		userId = pb.authStore.model?.id;
 	}
 
-	function logout() {
-		pb.authStore.clear();
-		window.location.reload();
-	}
-
 	async function getUser() {
 		if (userId === undefined) {
 			console.log('User is undefined');
@@ -48,11 +43,56 @@
 
 	<section class="container">
 		{#if pb.authStore.isValid}
-			<div class="card">
-				<p>{pb.authStore.model?.email}</p>
+			<div class="accordion" id="user-accordion">
+				<div class="accordion-item">
+					<h2 class="accordion-header" id="headingOne">
+						<button
+							class="accordion-button collapsed"
+							type="button"
+							data-bs-toggle="collapse"
+							data-bs-target="#collapseOne"
+							aria-expanded="false"
+							aria-controls="collapseOne"
+						>
+							Användare
+						</button>
+					</h2>
+					<div
+						id="collapseOne"
+						class="accordion-collapse collapse"
+						aria-labelledby="headingOne"
+						data-bs-parent="#user-accordion"
+					>
+						<div class="accordion-body">
+							<Users />
+						</div>
+					</div>
+				</div>
+				<div class="accordion-item">
+					<h2 class="accordion-header" id="headingTwo">
+						<button
+							class="accordion-button collapsed"
+							type="button"
+							data-bs-toggle="collapse"
+							data-bs-target="#collapseTwo"
+							aria-expanded="true"
+							aria-controls="collapseTwo"
+						>
+							Skapa användare
+						</button>
+					</h2>
+					<div
+						id="collapseTwo"
+						class="accordion-collapse collapse "
+						aria-labelledby="headingTwo"
+						data-bs-parent="#user-accordion"
+					>
+						<div class="accordion-body">
+							<NewUser />
+						</div>
+					</div>
+				</div>
 			</div>
-			<Users />
-			<NewUser />
 		{:else}
 			<Login />
 		{/if}

@@ -40,8 +40,9 @@
 		const record = await pb
 			.collection('requests')
 			.create(data)
-			.then(() => {
+			.then((data) => {
 				getRequests();
+				sendNewNotification(data);
 			});
 	}
 
@@ -58,6 +59,16 @@
 				requests = records;
 				console.log('Got requests', requests);
 			});
+	}
+
+	async function sendNewNotification(data: Object) {
+		fetch(publicUrl + '/api/node/notify/new', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(data)
+		});
 	}
 
 	if (pb.authStore.isValid) {

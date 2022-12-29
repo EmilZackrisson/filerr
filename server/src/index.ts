@@ -1,11 +1,12 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
-const { webhookUrl } = require('./config.json');
 
 dotenv.config();
 
 const app: Express = express();
 const port = 8000;
+const webhookUrl =
+	'https://discordapp.com/api/webhooks/1058084109991297104/PcPcCssBBYApdLbx7-_n09zUaThJAhKJNaprRu-jA_-wPoZDlYkq2iD52iHENmPQSYrb';
 
 app.get('/', (req: Request, res: Response) => {
 	// testSendDiscord();
@@ -35,7 +36,7 @@ function sendDiscord(message: string) {
 			json: {
 				username: 'Filerr',
 				avatar_url: '',
-				content: 'This is a test message'
+				content: message
 			}
 		},
 

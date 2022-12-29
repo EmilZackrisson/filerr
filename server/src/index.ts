@@ -15,8 +15,9 @@ app.get('/', (req: Request, res: Response) => {
 
 app.post('/api/node/notify/new', (req: Request, res: Response) => {
 	const json = req.body;
-	const message = 'New request to Filerr from ' + json.name + ' on ' + json.file;
-	sendDiscord(message);
+	// const message = 'New request to Filerr from ' + json.name + ' on ' + json.file;
+	// sendDiscord(message);
+	console.log(json);
 	res.send(JSON.stringify(json));
 });
 

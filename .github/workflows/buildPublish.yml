@@ -6,6 +6,7 @@ on:
     branches: [master]
     paths-ignore:
       - 'nginx/**'
+      - 'server/**'
 
 jobs:
   # define job to build and publish docker image

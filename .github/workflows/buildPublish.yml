@@ -10,6 +10,21 @@ on:
 
 jobs:
   # define job to build and publish docker image
+
+  create-envfile:
+ 
+    runs-on: ubuntu-latest
+ 
+    steps:
+      - name: Create env file
+        run: |
+          touch .env
+          echo PUBLIC_URL=${PUBLIC_URL} > .env
+          cat .env
+        env: 
+          PUBLIC_URL: ${{ secrets.FILERR_PUBLIC_URL }}
+
+
   build-and-push-docker-image:
     name: Build Docker image and push to repositories
     # run only when code is compiling and tests are passing

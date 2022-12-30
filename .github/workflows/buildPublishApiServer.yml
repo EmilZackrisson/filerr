@@ -8,6 +8,25 @@ on:
       - server/**
 
 jobs:
+
+  create-envfile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create env file
+        run: |
+          touch .env
+          echo POCKETBASE_URL="http://pocketbase-filerr:8090" > .env
+          echo POCKETBASE_ADMIN_USER=${POCKETBASE_ADMIN_USER} > .env
+          echo POCKETBASE_ADMIN_PASSWORD=${POCKETBASE_ADMIN_PASSWORD} > .env
+          echo DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL} > .env
+          cat .env
+        env: 
+          POCKETBASE_ADMIN_USER: ${{ secrets.FILERR_POCKETBASE_ADMIN_USER }}
+          POCKETBASE_ADMIN_PASSWORD: ${{ secrets.FILERR_POCKETBASE_ADMIN_PASSWORD }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.FILERR_DISCORD_WEBHOOK_URL }}
+
+
+
   # define job to build and publish docker image
   build-and-push-docker-image:
     name: Build Docker image and push to repositories

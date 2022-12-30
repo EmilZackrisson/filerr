@@ -1,7 +1,9 @@
 .DS_Store
 node_modules
 build
-/.svelte-kit
+.svelte-kit/adapter-node
+.svelte-kit/output
+.svelte-kit/generated
 /package
 .env
 vite.config.js.timestamp-*

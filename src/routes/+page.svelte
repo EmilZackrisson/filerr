@@ -3,10 +3,9 @@
 	import Login from '$lib/Login.svelte';
 	import RequestCard from '$lib/RequestCard.svelte';
 	import Navbar from '$lib/Navbar.svelte';
+	import { PUBLIC_URL } from '$env/static/public';
 
-	import publicUrl from '$lib/publicUrl';
-
-	const pb = new PocketBase(publicUrl);
+	const pb = new PocketBase(PUBLIC_URL);
 
 	console.log('Logged In: ', pb.authStore.isValid);
 
@@ -62,13 +61,21 @@
 	}
 
 	async function sendNewNotification(data: Object) {
-		fetch(publicUrl + '/api/node/notify/new', {
+		console.log('Sending notification', data);
+		fetch(PUBLIC_URL + '/api/node/notify/new', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify(data)
-		});
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				console.log('Success:', data);
+			})
+			.catch((error) => {
+				console.error('Error:', error);
+			});
 	}
 
 	if (pb.authStore.isValid) {

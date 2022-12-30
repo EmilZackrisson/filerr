@@ -3,7 +3,9 @@
 	import publicUrl from '$lib/publicUrl';
 	// import { getAllUsers } from '$lib/users';
 
-	const pb = new PocketBase(publicUrl);
+	import { PUBLIC_URL } from '$env/static/public';
+
+	const pb = new PocketBase(PUBLIC_URL);
 
 	var admin = false;
 	let vpnUrl: string;

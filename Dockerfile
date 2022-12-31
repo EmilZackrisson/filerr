@@ -1,7 +1,7 @@
 FROM node:16-alpine
 WORKDIR /app
 COPY package.json package-lock.json ./
-COPY .env ./
+COPY ./.env ./
 RUN npm install
 COPY . .
 RUN npm run check

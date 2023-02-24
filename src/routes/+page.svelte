@@ -19,11 +19,6 @@
 		type: string;
 	};
 
-	function logout() {
-		pb.authStore.clear();
-		window.location.reload();
-	}
-
 	async function requestFile(event: Event) {
 		const form = event.target as HTMLFormElement;
 		const formData = new FormData(form);
@@ -87,29 +82,9 @@
 		getRequests();
 	}
 
-	async function removeRequest(id: string) {
-		await pb
-			.collection('requests')
-			.delete(id)
-			.then(() => {
-				getRequests();
-			});
-	}
-
-	async function markCompleted(request: Request, id: string) {
-		const data = {
-			file: request.file,
-			user: request.user,
-			completed: true,
-			type: request.type
-		};
-
-		const record = await pb
-			.collection('requests')
-			.update(id, data)
-			.then(() => {
-				getRequests();
-			});
+	async function handleCardEvents(event: Event) {
+		console.log('Event: ', event);
+		alert('Event!');
 	}
 </script>
 
@@ -144,7 +119,7 @@
 					{/if}
 					{#each requests as request}
 						{#if request.completed === false}
-							<RequestCard {request} {admin} />
+							<RequestCard on:message={handleCardEvents} {request} {admin} />
 						{/if}
 					{/each}
 				{/await}

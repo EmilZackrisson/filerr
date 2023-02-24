@@ -1,10 +1,12 @@
 <script lang="ts">
 	import PocketBase, { Record } from 'pocketbase';
 	import publicUrl from '$lib/publicUrl';
-
+	import { createEventDispatcher } from 'svelte';
 	import { PUBLIC_URL } from '$env/static/public';
 
 	const pb = new PocketBase(PUBLIC_URL);
+
+	const dispatch = createEventDispatcher();
 
 	import moment from 'moment';
 	moment.locale('sv');
@@ -26,6 +28,7 @@
 			.then(() => {
 				// getRequests();
 				window.location.reload();
+				dispatch('removed', id);
 			});
 	}
 

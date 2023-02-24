@@ -7,9 +7,7 @@ dotenv.config();
 
 require('cross-fetch/polyfill');
 
-const pb = new PocketBase(process.env.POCKETBASE_URL);
-
-authPocketbase();
+const pb = new PocketBase('http://pocketbase-filerr:8090');
 
 const app: Express = express();
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -23,6 +21,8 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.post('/api/node/notify/new', (req: Request, res: Response) => {
+	authPocketbase();
+
 	try {
 		const json = req.body;
 		getExtraData(json.user)

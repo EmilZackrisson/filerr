@@ -1,5 +1,5 @@
 <script lang="ts">
-	import PocketBase, { type AuthProviderInfo } from 'pocketbase';
+	import PocketBase, { type RecordAuthResponse } from 'pocketbase';
 	// import { page } from '$app/stores';
 	import { page } from '$app/stores';
 	// import publicUrl from '$lib/publicUrl';
@@ -35,6 +35,7 @@
 				pb.collection('users')
 					.authWithOAuth2(providerName, code || '', providerCodeVerifier, redirectUrl)
 					.then((authData) => {
+						updateUserInfo(authData);
 						content = JSON.stringify(authData, null, 2);
 						console.log(content);
 						window.location.href = '/';
@@ -45,6 +46,22 @@
 			}
 		});
 	});
+
+	async function updateUserInfo(response: RecordAuthResponse) {
+		if (response.meta !== undefined) {
+			const data = {
+				username: response.meta.username,
+				email: response.meta.email,
+				name: response.meta.name
+			};
+			const record = await pb
+				.collection('users')
+				.update(response.record.id, data)
+				.catch((e) => {
+					console.log(e);
+				});
+		}
+	}
 </script>
 
 <main>

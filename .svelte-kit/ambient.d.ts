@@ -39,8 +39,7 @@ declare module '$env/static/private' {
 	export const ComSpec: string;
 	export const DriverData: string;
 	export const EDITOR: string;
-	export const FPS_BROWSER_APP_PROFILE_STRING: string;
-	export const FPS_BROWSER_USER_PROFILE_STRING: string;
+	export const EFC_6668: string;
 	export const GIT_ASKPASS: string;
 	export const helm: string;
 	export const HOME: string;
@@ -49,7 +48,6 @@ declare module '$env/static/private' {
 	export const INIT_CWD: string;
 	export const LANG: string;
 	export const LOCALAPPDATA: string;
-	export const LOCAL_GIT_DIRECTORY: string;
 	export const LOGONSERVER: string;
 	export const NODE: string;
 	export const NODE_ENV: string;
@@ -77,7 +75,6 @@ declare module '$env/static/private' {
 	export const npm_package_version: string;
 	export const NPM_PREFIX_NPM_CLI_JS: string;
 	export const NUMBER_OF_PROCESSORS: string;
-	export const OMP_NUM_THREADS: string;
 	export const OneDrive: string;
 	export const ORIGINAL_XDG_CURRENT_DESKTOP: string;
 	export const OS: string;
@@ -156,8 +153,7 @@ declare module '$env/dynamic/private' {
 		ComSpec: string;
 		DriverData: string;
 		EDITOR: string;
-		FPS_BROWSER_APP_PROFILE_STRING: string;
-		FPS_BROWSER_USER_PROFILE_STRING: string;
+		EFC_6668: string;
 		GIT_ASKPASS: string;
 		helm: string;
 		HOME: string;
@@ -166,7 +162,6 @@ declare module '$env/dynamic/private' {
 		INIT_CWD: string;
 		LANG: string;
 		LOCALAPPDATA: string;
-		LOCAL_GIT_DIRECTORY: string;
 		LOGONSERVER: string;
 		NODE: string;
 		NODE_ENV: string;
@@ -194,7 +189,6 @@ declare module '$env/dynamic/private' {
 		npm_package_version: string;
 		NPM_PREFIX_NPM_CLI_JS: string;
 		NUMBER_OF_PROCESSORS: string;
-		OMP_NUM_THREADS: string;
 		OneDrive: string;
 		ORIGINAL_XDG_CURRENT_DESKTOP: string;
 		OS: string;

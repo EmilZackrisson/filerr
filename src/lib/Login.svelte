@@ -5,29 +5,26 @@
 
 	const pb = new PocketBase(PUBLIC_URL);
 
-	console.log('Logged In: ', pb.authStore.isValid);
+	let liststate: Array<AuthProviderInfo> = [];
+	let redirectUrl = PUBLIC_URL + '/auth/redirect';
 
-	async function submitLogin(event: Event) {
-		// event.preventDefault();
-		const form = event.target as HTMLFormElement;
-		const formData = new FormData(form);
-		const email = formData.get('username') as string;
-		const password = formData.get('password') as string;
-		console.log(email, password);
-		const authData = await pb
-			.collection('users')
-			.authWithPassword(email, password)
-			.then(() => {
-				window.location.reload();
-			})
-			.catch((err) => {
-				console.log(err.message);
-				if (err.message === 'Failed to authenticate.') {
-					alert('Fel användarnamn eller lösenord');
-				} else {
-					alert('Något gick fel');
-				}
-			});
+	async function listalllogin() {
+		const result = await pb.collection('users').listAuthMethods();
+		console.log(result);
+		liststate = result.authProviders;
+		console.log('🚀 ~ file: Login.svelte:14 ~ listalllogin ~ liststate:', liststate);
+	}
+	listalllogin();
+	async function authentikSignIn() {
+		// localStorage.setItem('provider', JSON.stringify(liststate));
+		// provider.set(liststate);
+		const providerName = liststate[0].name;
+		const providerCodeVerifier = liststate[0].codeVerifier;
+		// document.cookie =
+		// 	'providerName=' + providerName + ', providerCodeVerifier' + providerCodeVerifier;
+		Cookies.set('providerName', providerName);
+		Cookies.set('providerCodeVerifier', providerCodeVerifier);
+		window.location.href = liststate[0].authUrl + redirectUrl;
 	}
 </script>
 

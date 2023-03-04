@@ -6,7 +6,8 @@
 	import Cookies from 'js-cookie';
 	const pb = new PocketBase(PUBLIC_URL);
 	let liststate: Array<AuthProviderInfo> = [];
-	let redirecturl = 'http://10.10.0.69:5173/auth/redirect';
+	let redirectUrl = PUBLIC_URL + '/auth/redirect';
+
 	async function listalllogin() {
 		const result = await pb.collection('users').listAuthMethods();
 		console.log(result);
@@ -23,7 +24,7 @@
 		// 	'providerName=' + providerName + ', providerCodeVerifier' + providerCodeVerifier;
 		Cookies.set('providerName', providerName);
 		Cookies.set('providerCodeVerifier', providerCodeVerifier);
-		window.location.href = liststate[0].authUrl + redirecturl;
+		window.location.href = liststate[0].authUrl + redirectUrl;
 	}
 </script>
 

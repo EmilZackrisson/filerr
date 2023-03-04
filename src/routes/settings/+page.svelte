@@ -4,7 +4,6 @@
 	import NewUser from '$lib/NewUser.svelte';
 	import Users from '$lib/Users.svelte';
 	import Navbar from '$lib/Navbar.svelte';
-	import publicUrl from '$lib/publicUrl';
 
 	import { PUBLIC_URL } from '$env/static/public';
 
@@ -23,12 +22,11 @@
 <main>
 	<Navbar />
 
-	<header class="container text-center">
-		<h1>Inställningar</h1>
-	</header>
-
 	<section class="container">
 		{#if pb.authStore.isValid}
+			<header class="container text-center">
+				<h1>Inställningar</h1>
+			</header>
 			<div class="accordion" id="user-accordion">
 				<div class="accordion-item">
 					<h2 class="accordion-header" id="headingOne">

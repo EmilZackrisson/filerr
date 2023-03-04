@@ -6,6 +6,7 @@
 	import { PUBLIC_URL } from '$env/static/public';
 	import { onMount } from 'svelte';
 	import Cookies from 'js-cookie';
+	import { generateUsername } from 'unique-username-generator';
 
 	const pb = new PocketBase(PUBLIC_URL);
 
@@ -31,9 +32,15 @@
 				// authenticate
 
 				var randomstring = Math.random().toString(36).slice(-8);
+				const randomUsername = generateUsername();
 
 				pb.collection('users')
-					.authWithOAuth2(providerName, code || '', providerCodeVerifier, redirectUrl)
+					.authWithOAuth2(providerName, code || '', providerCodeVerifier, redirectUrl, {
+						username: randomUsername,
+						password: randomstring,
+						passwordConfirm: randomstring,
+						email: randomUsername + '@autogen.se'
+					})
 					.then((authData) => {
 						updateUserInfo(authData);
 						content = JSON.stringify(authData, null, 2);
@@ -42,13 +49,14 @@
 					})
 					.catch((err) => {
 						content = 'Failed to exchange code.\n' + err;
+						console.error(err);
 					});
 			}
 		});
 	});
 
 	async function updateUserInfo(response: RecordAuthResponse) {
-		if (response.meta !== undefined) {
+		if (response.meta !== undefined && pb.authStore.isValid) {
 			const data = {
 				username: response.meta.username,
 				email: response.meta.email,
@@ -58,7 +66,10 @@
 				.collection('users')
 				.update(response.record.id, data)
 				.catch((e) => {
-					console.log(e);
+					console.error(e);
+				})
+				.then(() => {
+					console.log('updated user info');
 				});
 		}
 	}

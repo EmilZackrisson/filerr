@@ -1,5 +1,6 @@
 {
 	"/": [],
+	"/auth/redirect/[...params]": [],
 	"/profile": [],
 	"/settings": []
 }

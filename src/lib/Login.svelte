@@ -1,45 +1,47 @@
 <script lang="ts">
-	import PocketBase, { Record } from 'pocketbase';
+	import PocketBase, { type AuthProviderInfo } from 'pocketbase';
 	// import publicUrl from '$lib/publicUrl';
 	import { PUBLIC_URL } from '$env/static/public';
-
+	import { provider } from '../../src/stores';
+	import Cookies from 'js-cookie';
 	const pb = new PocketBase(PUBLIC_URL);
 
-	let liststate: Array<AuthProviderInfo> = [];
-	let redirectUrl = PUBLIC_URL + '/auth/redirect';
+	console.log('Logged In: ', pb.authStore.isValid);
 
-	async function listalllogin() {
-		const result = await pb.collection('users').listAuthMethods();
-		console.log(result);
-		liststate = result.authProviders;
-		console.log('🚀 ~ file: Login.svelte:14 ~ listalllogin ~ liststate:', liststate);
-	}
-	listalllogin();
-	async function authentikSignIn() {
-		// localStorage.setItem('provider', JSON.stringify(liststate));
-		// provider.set(liststate);
-		const providerName = liststate[0].name;
-		const providerCodeVerifier = liststate[0].codeVerifier;
-		// document.cookie =
-		// 	'providerName=' + providerName + ', providerCodeVerifier' + providerCodeVerifier;
-		Cookies.set('providerName', providerName);
-		Cookies.set('providerCodeVerifier', providerCodeVerifier);
-		window.location.href = liststate[0].authUrl + redirectUrl;
+	async function submitLogin(event: Event) {
+		// event.preventDefault();
+		const form = event.target as HTMLFormElement;
+		const formData = new FormData(form);
+		const email = formData.get('username') as string;
+		const password = formData.get('password') as string;
+		console.log(email, password);
+		const authData = await pb
+			.collection('users')
+			.authWithPassword(email, password)
+			.then(() => {
+				window.location.reload();
+			})
+			.catch((err) => {
+				console.log(err.message);
+				if (err.message === 'Failed to authenticate.') {
+					alert('Fel användarnamn eller lösenord');
+				} else {
+					alert('Något gick fel');
+				}
+			});
 	}
 </script>
 
 <main>
 	<div class="container-sm">
-		<form on:submit|preventDefault={submitLogin}>
-			<div class="mb-3">
-				<label for="username" class="form-label">Användarnamn</label>
-				<input type="text" class="form-control" id="username" name="username" />
-			</div>
-			<div class="mb-3">
-				<label for="password" class="form-label">Lösenord</label>
-				<input type="password" class="form-control" id="password" name="password" />
-			</div>
-			<button type="submit" class="btn btn-primary">Logga in</button>
-		</form>
+		{#await liststate}
+			<div>loading...</div>
+		{:then liststate}
+			{#each liststate as provider}
+				<button on:click={authentikSignIn} class="btn btn-primary">
+					{provider.name}
+				</button>
+			{/each}
+		{/await}
 	</div>
 </main>

@@ -9,18 +9,6 @@ services:
       - /mnt/user/docker-compose/filerr/public:/pb_public
     ports:
       - "8090:8090"
-  filerr:
-    image: filerr:latest
-    build: .
-    container_name: filerr
-    restart: unless-stopped
-    depends_on:
-      - "pocketbase-filerr"
-      - "filerr-proxy"
-    expose:
-      - "5050"
-    environment:
-      - PUBLIC_URL=https://filerr.emilzackrisson.se
   filerr-proxy:
     image: filerr-proxy:latest
     build: ./nginx
@@ -28,10 +16,3 @@ services:
     restart: unless-stopped
     ports:
       - "5050:5050"
-  filerr-server:
-    image: filerr-server:latest
-    build: ./server
-    container_name: filerr-server
-    expose:
-      - "8000"
-    restart: unless-stopped

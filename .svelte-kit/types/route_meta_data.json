@@ -1,5 +1,8 @@
 {
 	"/": [],
+	"/auth/change/email": [
+		"src/routes/auth/change/email/+server.ts"
+	],
 	"/auth/redirect/[...params]": [],
 	"/profile": [],
 	"/settings": []

@@ -35,17 +35,13 @@
 				const randomUsername = generateUsername();
 
 				pb.collection('users')
-					.authWithOAuth2(providerName, code || '', providerCodeVerifier, redirectUrl, {
-						username: randomUsername,
-						password: randomstring,
-						passwordConfirm: randomstring,
-						email: randomUsername + '@autogen.se'
-					})
+					.authWithOAuth2(providerName, code || '', providerCodeVerifier, redirectUrl)
 					.then((authData) => {
-						updateUserInfo(authData);
-						content = JSON.stringify(authData, null, 2);
-						console.log(content);
-						window.location.href = '/';
+						updateUserInfo(authData).then(() => {
+							content = JSON.stringify(authData, null, 2);
+							console.log(content);
+							window.location.href = '/';
+						});
 					})
 					.catch((err) => {
 						content = 'Failed to exchange code.\n' + err;
@@ -59,19 +55,37 @@
 		if (response.meta !== undefined && pb.authStore.isValid) {
 			const data = {
 				username: response.meta.username,
-				email: response.meta.email,
 				name: response.meta.name
 			};
-			const record = await pb
+			console.log('Got user data from oAuth', data);
+			await pb
 				.collection('users')
-				.update(response.record.id, data)
+				.update(pb.authStore.model!.id, data)
 				.catch((e) => {
 					console.error(e);
 				})
 				.then(() => {
 					console.log('updated user info');
 				});
+			// await updateEmail(response.meta.email, response.record.id);
 		}
+	}
+
+	async function updateEmail(email: string, userId: string) {
+		const url = '/auth/change/email?userId=' + userId + '&email=' + email;
+		const res = await fetch(url, {
+			method: 'PATCH',
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		})
+			.then(() => {
+				console.log('updated email');
+				console.log(res);
+			})
+			.catch((error) => {
+				console.error(error);
+			});
 	}
 </script>
 

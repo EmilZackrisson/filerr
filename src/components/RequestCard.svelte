@@ -78,4 +78,10 @@
 		border-color: black;
 		padding: 1rem;
 	}
+
+	@media only screen and (max-width: 600px) {
+		section {
+			width: 100%;
+		}
+	}
 </style>

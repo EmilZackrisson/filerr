@@ -18,14 +18,14 @@ jobs:
     steps:
       - name: Create env file
         run: |
-          touch .env
-          echo PUBLIC_URL=${PUBLIC_URL} > .env
-          echo PUBLIC_APPWRITE_ENDPOINT=${PUBLIC_APPWRITE_ENDPOINT} > .env
-          echo PUBLIC_APPWRITE_PROJECT=${PUBLIC_APPWRITE_PROJECT} > .env
-          echo PUBLIC_APPWRITE_DATABASE_ID=${PUBLIC_APPWRITE_DATABASE_ID} > .env
-          echo PUBLIC_APPWRITE_COLLECTION_ID=${PUBLIC_APPWRITE_COLLECTION_ID} > .env
-          echo PUBLIC_APPWRITE_TEAM_ADMIN_ID=${PUBLIC_APPWRITE_TEAM_ADMIN_ID} > .env
-          cat .env
+          touch .env.production
+          echo PUBLIC_URL=${PUBLIC_URL} > .env.production
+          echo PUBLIC_APPWRITE_ENDPOINT=${PUBLIC_APPWRITE_ENDPOINT} > .env.production
+          echo PUBLIC_APPWRITE_PROJECT=${PUBLIC_APPWRITE_PROJECT} > .env.production
+          echo PUBLIC_APPWRITE_DATABASE_ID=${PUBLIC_APPWRITE_DATABASE_ID} > .env.production
+          echo PUBLIC_APPWRITE_COLLECTION_ID=${PUBLIC_APPWRITE_COLLECTION_ID} > .env.production
+          echo PUBLIC_APPWRITE_TEAM_ADMIN_ID=${PUBLIC_APPWRITE_TEAM_ADMIN_ID} > .env.production
+          cat .env.production
         env: 
           PUBLIC_URL: ${{ secrets.FILERR_PUBLIC_URL }}
           PUBLIC_APPWRITE_ENDPOINT: ${{ secrets.PUBLIC_APPWRITE_ENDPOINT }}

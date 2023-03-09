@@ -70,7 +70,6 @@ jobs:
           push: ${{ github.ref == 'refs/heads/master' }}
 
           build-args: |
-            "SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}"
             "PUBLIC_URL=${{ secrets.FILERR_PUBLIC_URL }}"
             "PUBLIC_APPWRITE_ENDPOINT=${{ secrets.PUBLIC_APPWRITE_ENDPOINT }}"
             "PUBLIC_APPWRITE_PROJECT=${{ secrets.PUBLIC_APPWRITE_PROJECT }}"

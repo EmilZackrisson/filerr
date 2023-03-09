@@ -2,7 +2,11 @@
 	import { onMount } from 'svelte';
 	import { Client, Account, ID, AppwriteException } from 'appwrite';
 	import type { Models } from 'appwrite';
-	import { PUBLIC_APPWRITE_PROJECT, PUBLIC_APPWRITE_ENDPOINT } from '$env/static/public';
+	import {
+		PUBLIC_APPWRITE_PROJECT,
+		PUBLIC_APPWRITE_ENDPOINT,
+		PUBLIC_URL
+	} from '$env/static/public';
 	import Navbar from '../components/Navbar.svelte';
 	import RequestList from '../components/RequestList.svelte';
 	import Loader from '../components/Loader.svelte';
@@ -32,7 +36,7 @@
 	});
 
 	function login() {
-		account.createOAuth2Session('authentik', 'http://10.10.0.69:5173', 'http://10.10.0.69:5173');
+		account.createOAuth2Session('authentik', PUBLIC_URL, PUBLIC_URL);
 	}
 </script>
 

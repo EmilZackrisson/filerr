@@ -1,28 +1,8 @@
 version: "3.7"
 services:
-  pocketbase-filerr:
-    image: ghcr.io/muchobien/pocketbase:latest
-    container_name: filerr-pocketbase
-    restart: unless-stopped
-    volumes:
-      - /mnt/user/docker-compose/filerr/data:/pb_data
-      - /mnt/user/docker-compose/filerr/public:/pb_public
-    ports:
-      - "8090:8090"
   filerr:
     image: ghcr.io/emilzackrisson/filerr:latest
     container_name: filerr
-    restart: unless-stopped
-    depends_on:
-      - "pocketbase-filerr"
-      - "filerr-proxy"
-    expose:
-      - "5050"
-    environment:
-      - PUBLIC_URL=https://filerr.emilzackrisson.se
-  filerr-proxy:
-    image: ghcr.io/emilzackrisson/filerr-proxy:latest
-    container_name: filerr-proxy
     restart: unless-stopped
     ports:
       - "5050:5050"

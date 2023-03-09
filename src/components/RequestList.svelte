@@ -1,18 +1,14 @@
 <script lang="ts">
-	import {
-		PUBLIC_APPWRITE_DATABASE_ID,
-		PUBLIC_APPWRITE_COLLECTION_ID,
-		PUBLIC_APPWRITE_TEAM_ADMIN_ID
-	} from '$env/static/public';
-	import { Teams, type Account, type Client, type Models } from 'appwrite';
+	import { PUBLIC_APPWRITE_DATABASE_ID, PUBLIC_APPWRITE_COLLECTION_ID } from '$env/static/public';
+	import { Permission, Teams, type Account, type Client, type Models } from 'appwrite';
 	import { Databases } from 'appwrite';
-	import { error } from 'jquery';
 	import { onMount } from 'svelte';
 	import Loader from './Loader.svelte';
 	import RequestCard from './RequestCard.svelte';
 	import toast, { Toaster } from 'svelte-french-toast';
 
 	export let client: Client;
+	export let accountData: Models.Account<Models.Preferences>;
 
 	let teams = new Teams(client);
 	const databases = new Databases(client);
@@ -29,6 +25,7 @@
 		id: string;
 		createdAt: Date;
 		updatedAt: Date;
+		permissions: Permission;
 	}
 
 	let requests: FileRequest[] = [];
@@ -46,7 +43,8 @@
 					completed: document.completed,
 					createdAt: new Date(document.$createdAt),
 					updatedAt: new Date(document.$updatedAt),
-					user: document.user
+					user: document.user,
+					permissions: document.$permissions
 				};
 				requests.push(request);
 				console.log(request);
@@ -74,7 +72,7 @@
 	<Toaster />
 	{#if loadedRequests}
 		{#each requests as request}
-			<RequestCard {request} {teamMembership} {databases} />
+			<RequestCard {request} {teamMembership} {databases} {accountData} />
 		{/each}
 	{:else}
 		<Loader message="Laddar ansökningar" />

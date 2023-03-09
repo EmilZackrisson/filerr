@@ -46,7 +46,7 @@
 	{:else if loggedIn}
 		<Navbar {accountData} {account} />
 		<h1>Välkommen {accountData.name}!</h1>
-		<RequestList {client} />
+		<RequestList {client} {accountData} />
 	{:else}
 		<button on:click={login}>Login</button>
 	{/if}

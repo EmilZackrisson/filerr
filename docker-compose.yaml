@@ -26,9 +26,3 @@ services:
     restart: unless-stopped
     ports:
       - "5050:5050"
-  filerr-server:
-    image: ghcr.io/emilzackrisson/filerr-server:latest
-    container_name: filerr-server
-    expose:
-      - "8000"
-    restart: unless-stopped

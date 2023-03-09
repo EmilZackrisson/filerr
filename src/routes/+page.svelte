@@ -1,134 +1,57 @@
 <script lang="ts">
-	import PocketBase, { Record } from 'pocketbase';
-	import Login from '$lib/Login.svelte';
-	import RequestCard from '$lib/RequestCard.svelte';
-	import Navbar from '$lib/Navbar.svelte';
-	import { PUBLIC_URL } from '$env/static/public';
+	import { onMount } from 'svelte';
+	import { Client, Account, ID, AppwriteException } from 'appwrite';
+	import type { Models } from 'appwrite';
+	import { PUBLIC_APPWRITE_PROJECT, PUBLIC_APPWRITE_ENDPOINT } from '$env/static/public';
+	import Navbar from '../components/Navbar.svelte';
+	import RequestList from '../components/RequestList.svelte';
+	import Loader from '../components/Loader.svelte';
 
-	const pb = new PocketBase(PUBLIC_URL);
+	const client = new Client()
+		.setEndpoint(PUBLIC_APPWRITE_ENDPOINT) // Your API Endpoint
+		.setProject(PUBLIC_APPWRITE_PROJECT); // Your project ID
 
-	console.log('Logged In: ', pb.authStore.isValid);
+	const account = new Account(client);
+	let accountData: Models.Account<Models.Preferences>;
+	let loggedIn = false;
+	let loading = true;
 
-	let requests: any = [];
-	let admin = false;
-
-	type Request = {
-		file: string;
-		user: string;
-		completed: boolean;
-		type: string;
-	};
-
-	async function requestFile(event: Event) {
-		const form = event.target as HTMLFormElement;
-		const formData = new FormData(form);
-		const file = formData.get('file') as string;
-		const type = formData.get('type') as string;
-		const data = {
-			file: file,
-			completed: false,
-			type: type,
-			user: pb.authStore.model?.id
-		};
-
-		const record = await pb
-			.collection('requests')
-			.create(data)
-			.then((data) => {
-				getRequests();
-				sendNewNotification(data);
-			});
-	}
-
-	async function getRequests() {
-		console.log('Getting requests');
-		const records = await pb
-			.collection('requests')
-			.getFullList(50 /* batch size */, {
-				sort: '-created',
-				expand: 'user',
-				filter: 'completed = false'
-			})
-			.then((records) => {
-				requests = records;
-				console.log('Got requests', requests);
-			});
-	}
-
-	async function sendNewNotification(data: Object) {
-		console.log('Sending notification', data);
-		fetch(PUBLIC_URL + '/api/node/notify/new', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(data)
-		})
-			.then((response) => response.json())
-			.then((data) => {
-				console.log('Success:', data);
-			})
-			.catch((error) => {
-				console.error('Error:', error);
-			});
-	}
-
-	if (pb.authStore.isValid) {
-		console.log('User: ', pb.authStore.model?.id);
-		if (pb.authStore.model?.id === 'jcj1e83y9nsfi3q') {
-			console.log('You are admin');
-			admin = true;
+	onMount(async () => {
+		try {
+			accountData = await account.get();
+			loggedIn = accountData.$id !== (null || undefined);
+		} catch (e) {
+			if (e instanceof AppwriteException && e.code === 401) {
+				console.log('Not logged in');
+			} else {
+				console.log(e);
+			}
 		}
-		getRequests();
-	}
 
-	async function handleCardEvents(event: Event) {
-		console.log('Event: ', event);
-		alert('Event!');
+		loading = false;
+	});
+
+	function login() {
+		account.createOAuth2Session('authentik', 'http://10.10.0.69:5173', 'http://10.10.0.69:5173');
 	}
 </script>
 
 <main>
-	<Navbar />
-	{#if pb.authStore.isValid}
-		<div class="container-sm card mt-3">
-			<h3>Ansök om fil</h3>
-			<form on:submit|preventDefault={requestFile}>
-				<label for="file">Vad vill du ha?</label>
-				<input type="text" class="form-control mb-3" id="fileInput" name="file" />
-				<label for="type">Välj en typ</label>
-				<select class="form-select mb-3" name="type">
-					<option selected>Välj en typ</option>
-					<option value="Spel">Spel</option>
-					<option value="Program">Program</option>
-					<option value="Annat">Annat</option>
-				</select>
-				<button type="submit" class="btn btn-primary mb-3">Skicka</button>
-			</form>
-		</div>
-		<div class="container-sm mt-5">
-			<h2>Ansökningar</h2>
-			<div>
-				{#await requests}
-					<h3>Laddar...</h3>
-				{:then requests}
-					{#if requests.length === 0}
-						<div class="text-center">
-							<h3>Alla ansökningar är klara 👍</h3>
-						</div>
-					{/if}
-					{#each requests as request}
-						{#if request.completed === false}
-							<RequestCard on:message={handleCardEvents} {request} {admin} />
-						{/if}
-					{/each}
-				{/await}
-			</div>
-		</div>
+	{#if loading}
+		<Loader message="" />
+	{:else if loggedIn}
+		<Navbar {accountData} {account} />
+		<h1>Välkommen {accountData.name}!</h1>
+		<RequestList {client} />
 	{:else}
-		<Login />
+		<button on:click={login}>Login</button>
 	{/if}
 </main>
 
 <style>
+	main {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
 </style>

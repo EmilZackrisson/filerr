@@ -26,8 +26,6 @@
  * ```
  */
 declare module '$env/static/private' {
-	export const ADMIN_EMAIL: string;
-	export const ADMIN_PASSWORD: string;
 	export const ACSvcPort: string;
 	export const ALLUSERSPROFILE: string;
 	export const APPDATA: string;
@@ -41,9 +39,6 @@ declare module '$env/static/private' {
 	export const ComSpec: string;
 	export const DriverData: string;
 	export const EDITOR: string;
-	export const EFC_11852: string;
-	export const FPS_BROWSER_APP_PROFILE_STRING: string;
-	export const FPS_BROWSER_USER_PROFILE_STRING: string;
 	export const GIT_ASKPASS: string;
 	export const helm: string;
 	export const HOME: string;
@@ -96,7 +91,6 @@ declare module '$env/static/private' {
 	export const PT8HOME: string;
 	export const PUBLIC: string;
 	export const RlsSvcPort: string;
-	export const SESSIONNAME: string;
 	export const SystemDrive: string;
 	export const SystemRoot: string;
 	export const TEMP: string;
@@ -128,6 +122,11 @@ declare module '$env/static/private' {
  */
 declare module '$env/static/public' {
 	export const PUBLIC_URL: string;
+	export const PUBLIC_APPWRITE_ENDPOINT: string;
+	export const PUBLIC_APPWRITE_PROJECT: string;
+	export const PUBLIC_APPWRITE_DATABASE_ID: string;
+	export const PUBLIC_APPWRITE_COLLECTION_ID: string;
+	export const PUBLIC_APPWRITE_TEAM_ADMIN_ID: string;
 }
 
 /**
@@ -144,8 +143,6 @@ declare module '$env/static/public' {
  */
 declare module '$env/dynamic/private' {
 	export const env: {
-		ADMIN_EMAIL: string;
-		ADMIN_PASSWORD: string;
 		ACSvcPort: string;
 		ALLUSERSPROFILE: string;
 		APPDATA: string;
@@ -159,9 +156,6 @@ declare module '$env/dynamic/private' {
 		ComSpec: string;
 		DriverData: string;
 		EDITOR: string;
-		EFC_11852: string;
-		FPS_BROWSER_APP_PROFILE_STRING: string;
-		FPS_BROWSER_USER_PROFILE_STRING: string;
 		GIT_ASKPASS: string;
 		helm: string;
 		HOME: string;
@@ -214,7 +208,6 @@ declare module '$env/dynamic/private' {
 		PT8HOME: string;
 		PUBLIC: string;
 		RlsSvcPort: string;
-		SESSIONNAME: string;
 		SystemDrive: string;
 		SystemRoot: string;
 		TEMP: string;
@@ -251,6 +244,11 @@ declare module '$env/dynamic/private' {
 declare module '$env/dynamic/public' {
 	export const env: {
 		PUBLIC_URL: string;
+		PUBLIC_APPWRITE_ENDPOINT: string;
+		PUBLIC_APPWRITE_PROJECT: string;
+		PUBLIC_APPWRITE_DATABASE_ID: string;
+		PUBLIC_APPWRITE_COLLECTION_ID: string;
+		PUBLIC_APPWRITE_TEAM_ADMIN_ID: string;
 		[key: `PUBLIC_${string}`]: string | undefined;
 	}
 }

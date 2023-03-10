@@ -10,6 +10,7 @@
 	import Navbar from '../components/Navbar.svelte';
 	import RequestList from '../components/RequestList.svelte';
 	import Loader from '../components/Loader.svelte';
+	import CreateRequest from '../components/CreateRequest.svelte';
 
 	const client = new Client()
 		.setEndpoint(PUBLIC_APPWRITE_ENDPOINT) // Your API Endpoint
@@ -45,10 +46,12 @@
 		<Loader message="" />
 	{:else if loggedIn}
 		<Navbar {accountData} {account} />
-		<h1>Välkommen {accountData.name}!</h1>
+		<h1 class="text-3xl font-semibold">Välkommen {accountData.name}!</h1>
+		<CreateRequest {client} {accountData} />
 		<RequestList {client} {accountData} />
 	{:else}
-		<button on:click={login}>Login</button>
+		<h1 class="text-3xl font-semibold">Logga in för att skapa en förfrågan</h1>
+		<button on:click={login} class="btn btn-primary">Logga in med Authentik</button>
 	{/if}
 </main>
 
@@ -57,5 +60,6 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		gap: 20px;
 	}
 </style>

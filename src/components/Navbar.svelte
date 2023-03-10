@@ -11,62 +11,26 @@
 	}
 </script>
 
-<nav>
-	<h3>Filerr</h3>
-	<ul>
-		<li><a href="/">Hem</a></li>
-
-		{#if accountData.$id}
-			<li>
-				<a href="/profile">
-					Inloggad som: {accountData.name.split(' ')[0] +
-						' ' +
-						accountData.name.split(' ')[1].at(0)}
-				</a>
-			</li>
-			<li>
-				<button on:click={logout}>Logga ut</button>
-			</li>
-		{:else}
-			<li><a href="/login">Login</a></li>
+<nav class="navbar bg-base-100">
+	<div class="navbar-start">
+		<h3>Filerr</h3>
+	</div>
+	<div class="navbar-center hidden lg:flex">
+		<ul class="menu menu-horizontal px-1">
+			<li><a href="/">Hem</a></li>
+			{#if accountData}
+				<li>
+					<a href="/profile"
+						>Profil: {accountData.name.split(' ')[0]}
+						{accountData.name.split(' ')[1].substring(0, 1)}</a
+					>
+				</li>
+			{/if}
+		</ul>
+	</div>
+	<div class="navbar-end">
+		{#if accountData}
+			<button class="btn btn-primary" on:click={logout}>Logga ut</button>
 		{/if}
-	</ul>
+	</div>
 </nav>
-
-<style>
-	nav {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		height: 3rem;
-		width: 100vw;
-	}
-
-	nav h3 {
-		font-size: 1.5rem;
-		margin-left: 10px;
-	}
-
-	nav ul {
-		display: flex;
-		list-style: none;
-		gap: 10px;
-		align-items: center;
-		height: 100%;
-		margin: 10px;
-	}
-
-	nav ul li {
-		display: flex;
-		align-items: center;
-	}
-
-	nav ul li a {
-		text-decoration: none;
-		color: #000;
-	}
-
-	nav ul li a:hover {
-		color: #ccc;
-	}
-</style>

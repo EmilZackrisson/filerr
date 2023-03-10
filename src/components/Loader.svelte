@@ -3,11 +3,11 @@
 </script>
 
 <div class="loading-center">
-	{message}
 	<div class="lds-ripple">
 		<div />
 		<div />
 	</div>
+	{message}
 </div>
 
 <style>
@@ -15,6 +15,9 @@
 		position: absolute;
 		top: 50%;
 		left: 50%;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 	}
 
 	.lds-ripple {
@@ -25,7 +28,7 @@
 	}
 	.lds-ripple div {
 		position: absolute;
-		border: 4px solid #fff;
+		border: 4px solid #616161;
 		opacity: 1;
 		border-radius: 50%;
 		animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;

@@ -53,41 +53,49 @@ var nodemailer = require('nodemailer');
 */
 module.exports = function (req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var client, users, updatedDocument, user, userEmail;
+        var client, users, updatedDocument_1;
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    console.log('Request: ', req);
-                    client = new node_appwrite_1.Client();
-                    users = new node_appwrite_1.Users(client);
-                    if (JSON.parse(req.variables['APPWRITE_FUNCTION_EVENT_DATA']).status !== 'Begun') {
-                        res.send('Admin har inte påbörjat');
-                        return [2 /*return*/];
-                    }
-                    if (!req.variables['APPWRITE_FUNCTION_ENDPOINT'] || !req.variables['APPWRITE_FUNCTION_API_KEY']) {
-                        console.warn('Environment variables are not set. Function cannot use Appwrite SDK.');
-                    }
-                    else {
-                        client
-                            .setEndpoint(req.variables['APPWRITE_FUNCTION_ENDPOINT'])
-                            .setProject(req.variables['APPWRITE_FUNCTION_PROJECT_ID'])
-                            .setKey(req.variables['APPWRITE_FUNCTION_API_KEY']);
-                    }
-                    if (!(req.variables['APPWRITE_FUNCTION_EVENT_DATA'] !== null ||
-                        req.variables['APPWRITE_FUNCTION_EVENT_DATA'] !== undefined ||
-                        req.variables['APPWRITE_FUNCTION_EVENT_DATA'].completedBy !== '')) return [3 /*break*/, 2];
-                    if (!(req.variables['SMTP_USER'] !== null || req.variables['SMTP_USER'] !== undefined)) return [3 /*break*/, 2];
-                    updatedDocument = JSON.parse(req.variables['APPWRITE_FUNCTION_EVENT_DATA']);
-                    console.log('Completed Document: ', updatedDocument);
-                    return [4 /*yield*/, users.get(updatedDocument.user)];
-                case 1:
-                    user = _a.sent();
-                    userEmail = user.email;
-                    sendUserEmail(updatedDocument, users, req.variables['SMTP_HOST'], req.variables['SMTP_EMAIL'], req.variables['SMTP_USER'], req.variables['SMTP_PASS']);
-                    res.send(updatedDocument.completedBy + ' förfrågade ' + updatedDocument.name);
-                    _a.label = 2;
-                case 2: return [2 /*return*/];
+            console.log('Request: ', req);
+            client = new node_appwrite_1.Client();
+            // You can remove services you don't use
+            // const account = new sdk.Account(client);
+            // const avatars = new sdk.Avatars(client);
+            // const database = new Databases(client);
+            // const functions = new sdk.Functions(client);
+            // const health = new sdk.Health(client);
+            // const locale = new sdk.Locale(client);
+            // const storage = new sdk.Storage(client);
+            // const teams = new sdk.Teams(client);
+            if (JSON.parse(req.variables['APPWRITE_FUNCTION_EVENT_DATA']).status !== 'Begun') {
+                res.send('Admin har inte påbörjat');
+                return [2 /*return*/];
             }
+            if (!req.variables['APPWRITE_FUNCTION_ENDPOINT'] || !req.variables['APPWRITE_FUNCTION_API_KEY']) {
+                console.warn('Environment variables are not set. Function cannot use Appwrite SDK.');
+            }
+            else {
+                client
+                    .setEndpoint(req.variables['APPWRITE_FUNCTION_ENDPOINT'])
+                    .setProject(req.variables['APPWRITE_FUNCTION_PROJECT_ID'])
+                    .setKey(req.variables['APPWRITE_FUNCTION_API_KEY']);
+            }
+            users = new node_appwrite_1.Users(client);
+            if (req.variables['APPWRITE_FUNCTION_EVENT_DATA'] !== null ||
+                req.variables['APPWRITE_FUNCTION_EVENT_DATA'] !== undefined ||
+                req.variables['APPWRITE_FUNCTION_EVENT_DATA'].completedBy !== '') {
+                if (req.variables['SMTP_USER'] !== null || req.variables['SMTP_USER'] !== undefined) {
+                    updatedDocument_1 = JSON.parse(req.variables['APPWRITE_FUNCTION_EVENT_DATA']);
+                    console.log('Completed Document: ', updatedDocument_1);
+                    sendUserEmail(updatedDocument_1, users, req.variables['SMTP_HOST'], req.variables['SMTP_EMAIL'], req.variables['SMTP_USER'], req.variables['SMTP_PASS'])
+                        .then(function () {
+                        console.log('Email sent');
+                        res.send(updatedDocument_1.completedBy + ' förfrågade ' + updatedDocument_1.name);
+                    })["catch"](function (e) {
+                        console.error('Error: ', e);
+                    });
+                }
+            }
+            return [2 /*return*/];
         });
     });
 };
@@ -116,7 +124,7 @@ function sendUserEmail(request, users, smtp_host, smtp_email, smtp_user, smtp_pa
                         })];
                 case 1:
                     info = _a.sent();
-                    console.log('Message sent: %s', request);
+                    console.log('Message sent: %s', info);
                     return [2 /*return*/];
             }
         });
@@ -124,13 +132,16 @@ function sendUserEmail(request, users, smtp_host, smtp_email, smtp_user, smtp_pa
 }
 function getUserEmail(request, users) {
     return __awaiter(this, void 0, void 0, function () {
-        var user, userEmail;
+        var allUsers, userIndex, userEmail;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, users.get(request.user)];
+                case 0: return [4 /*yield*/, users.list()];
                 case 1:
-                    user = _a.sent();
-                    userEmail = user.email;
+                    allUsers = _a.sent();
+                    console.log('All users: ', allUsers);
+                    userIndex = allUsers.users.findIndex(function (user) { return user.name === request.user; });
+                    console.log('User index: ', userIndex);
+                    userEmail = allUsers.users[userIndex].email;
                     return [2 /*return*/, userEmail];
             }
         });

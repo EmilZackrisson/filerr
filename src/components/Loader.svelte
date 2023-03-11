@@ -13,7 +13,7 @@
 <style>
 	.loading-center {
 		position: absolute;
-		top: 50%;
+		top: 30%;
 		left: 50%;
 		display: flex;
 		flex-direction: column;

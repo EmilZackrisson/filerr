@@ -39,6 +39,9 @@ declare module '$env/static/private' {
 	export const ComSpec: string;
 	export const DriverData: string;
 	export const EDITOR: string;
+	export const EFC_25988: string;
+	export const FPS_BROWSER_APP_PROFILE_STRING: string;
+	export const FPS_BROWSER_USER_PROFILE_STRING: string;
 	export const GIT_ASKPASS: string;
 	export const helm: string;
 	export const HOME: string;
@@ -91,6 +94,7 @@ declare module '$env/static/private' {
 	export const PT8HOME: string;
 	export const PUBLIC: string;
 	export const RlsSvcPort: string;
+	export const SESSIONNAME: string;
 	export const SystemDrive: string;
 	export const SystemRoot: string;
 	export const TEMP: string;
@@ -156,6 +160,9 @@ declare module '$env/dynamic/private' {
 		ComSpec: string;
 		DriverData: string;
 		EDITOR: string;
+		EFC_25988: string;
+		FPS_BROWSER_APP_PROFILE_STRING: string;
+		FPS_BROWSER_USER_PROFILE_STRING: string;
 		GIT_ASKPASS: string;
 		helm: string;
 		HOME: string;
@@ -208,6 +215,7 @@ declare module '$env/dynamic/private' {
 		PT8HOME: string;
 		PUBLIC: string;
 		RlsSvcPort: string;
+		SESSIONNAME: string;
 		SystemDrive: string;
 		SystemRoot: string;
 		TEMP: string;

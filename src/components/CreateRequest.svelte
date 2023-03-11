@@ -17,7 +17,6 @@
 		e.preventDefault();
 		const form = e.target as HTMLFormElement;
 		const formData = new FormData(form);
-		console.log(formData);
 		if (formData.get('fileName')?.toString().trim() === '') {
 			toast.error('Du måste berätta vad du vill ha. Jag kan inte läsa tankar.');
 			return;
@@ -51,7 +50,7 @@
 	}
 </script>
 
-<form on:submit|preventDefault={submitRequest} class="bg-base-200" id="submitForm">
+<form on:submit|preventDefault={submitRequest} class="container bg-base-200" id="submitForm">
 	<Toaster />
 	<label for="fileName" class="label">Filnamn</label>
 	<input type="text" name="fileName" id="fileName" class="input w-full" />
@@ -71,7 +70,6 @@
 	form {
 		display: flex;
 		flex-direction: column;
-		width: 60%;
 		gap: 3px;
 		padding: 15px;
 		border-radius: 5px;

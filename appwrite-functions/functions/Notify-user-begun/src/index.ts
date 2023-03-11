@@ -28,7 +28,6 @@ module.exports = async function (req: any, res: any) {
 	// const locale = new sdk.Locale(client);
 	// const storage = new sdk.Storage(client);
 	// const teams = new sdk.Teams(client);
-	const users = new Users(client);
 
 	if (JSON.parse(req.variables['APPWRITE_FUNCTION_EVENT_DATA']).status !== 'Begun') {
 		res.send('Admin har inte påbörjat');
@@ -43,6 +42,7 @@ module.exports = async function (req: any, res: any) {
 			.setProject(req.variables['APPWRITE_FUNCTION_PROJECT_ID'])
 			.setKey(req.variables['APPWRITE_FUNCTION_API_KEY']);
 	}
+	const users = new Users(client);
 
 	if (
 		req.variables['APPWRITE_FUNCTION_EVENT_DATA'] !== null ||
@@ -52,8 +52,6 @@ module.exports = async function (req: any, res: any) {
 		if (req.variables['SMTP_USER'] !== null || req.variables['SMTP_USER'] !== undefined) {
 			const updatedDocument: Request = JSON.parse(req.variables['APPWRITE_FUNCTION_EVENT_DATA']);
 			console.log('Completed Document: ', updatedDocument);
-			const user = await users.get(updatedDocument.user);
-			const userEmail = user.email;
 			sendUserEmail(
 				updatedDocument,
 				users,
@@ -61,9 +59,14 @@ module.exports = async function (req: any, res: any) {
 				req.variables['SMTP_EMAIL'],
 				req.variables['SMTP_USER'],
 				req.variables['SMTP_PASS']
-			);
-
-			res.send(updatedDocument.completedBy + ' förfrågade ' + updatedDocument.name);
+			)
+				.then(() => {
+					console.log('Email sent');
+					res.send(updatedDocument.completedBy + ' förfrågade ' + updatedDocument.name);
+				})
+				.catch((e) => {
+					console.error('Error: ', e);
+				});
 		}
 	}
 };
@@ -97,13 +100,15 @@ async function sendUserEmail(
 		html: htmlMessage // html body
 	});
 
-	console.log('Message sent: %s', request);
-	// Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+	console.log('Message sent: %s', info);
 }
 
 async function getUserEmail(request: Request, users: Users) {
-	const user = await users.get(request.user);
-	const userEmail = user.email;
+	const allUsers = await users.list();
+	console.log('All users: ', allUsers);
+	const userIndex = allUsers.users.findIndex((user) => user.name === request.user);
+	console.log('User index: ', userIndex);
+	const userEmail = allUsers.users[userIndex].email;
 	return userEmail;
 }
 

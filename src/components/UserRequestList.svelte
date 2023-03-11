@@ -9,6 +9,7 @@
 
 	export let client: Client;
 	export let accountData: Models.Account<Models.Preferences>;
+	export let username: string;
 
 	let teams = new Teams(client);
 	const databases = new Databases(client);
@@ -36,13 +37,16 @@
 		try {
 			let documents = await databases.listDocuments(
 				PUBLIC_APPWRITE_DATABASE_ID,
-				PUBLIC_APPWRITE_COLLECTION_ID
+				PUBLIC_APPWRITE_COLLECTION_ID,
+				[Query.equal('user', accountData.name)]
 			);
 
 			// Testar
 			const subscriptionChannel = 'collections.' + PUBLIC_APPWRITE_COLLECTION_ID + '.documents';
 			client.subscribe([subscriptionChannel, 'documents'], (response) => {
 				// Callback will be executed on changes for documents A and all files.
+				// @ts-expect-error
+				if (response.payload.user !== username) return;
 
 				if (response.events[0].includes('.create')) {
 					const payload: Models.Document = response.payload as Models.Document;
@@ -116,7 +120,6 @@
 
 	async function getTeam() {
 		teamMembership = await teams.list();
-
 		return teamMembership;
 	}
 
@@ -125,27 +128,15 @@
 	});
 </script>
 
-<section>
+<section class="flex flex-col gap-3">
 	<Toaster />
 	{#if loadedRequests}
 		{#each requests as request}
-			{#if !request.completed}
-				{#key uniqueKey}
-					<RequestCard {request} {teamMembership} {databases} {accountData} allowDeletion={true} />
-				{/key}
-			{/if}
+			{#key uniqueKey}
+				<RequestCard {request} {teamMembership} {databases} {accountData} allowDeletion={false} />
+			{/key}
 		{/each}
 	{:else}
 		<Loader message="Laddar ansökningar" />
 	{/if}
 </section>
-
-<style>
-	section {
-		width: 100%;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 5px;
-	}
-</style>

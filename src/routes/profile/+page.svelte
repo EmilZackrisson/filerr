@@ -3,7 +3,6 @@
 	import {
 		Client,
 		Account,
-		ID,
 		AppwriteException,
 		Databases,
 		Query,
@@ -14,15 +13,12 @@
 	import {
 		PUBLIC_APPWRITE_PROJECT,
 		PUBLIC_APPWRITE_ENDPOINT,
-		PUBLIC_URL,
 		PUBLIC_APPWRITE_DATABASE_ID,
 		PUBLIC_APPWRITE_COLLECTION_ID
 	} from '$env/static/public';
 	import Navbar from '../../components/Navbar.svelte';
-	import RequestList from '../../components/RequestList.svelte';
 	import Loader from '../../components/Loader.svelte';
-	import CreateRequest from '../../components/CreateRequest.svelte';
-	import RequestCard from '../../components/RequestCard.svelte';
+	import UserRequestList from '../../components/UserRequestList.svelte';
 
 	const client = new Client()
 		.setEndpoint(PUBLIC_APPWRITE_ENDPOINT) // Your API Endpoint
@@ -48,7 +44,7 @@
 		createdAt: Date;
 		updatedAt: Date;
 		permissions: Permission;
-		type?: string | 'Annat';
+		type: string | 'Annat';
 	}
 
 	async function getTeam() {
@@ -62,7 +58,7 @@
 			let documents = await databases.listDocuments(
 				PUBLIC_APPWRITE_DATABASE_ID,
 				PUBLIC_APPWRITE_COLLECTION_ID,
-				[Query.equal('user', accountData.$id)]
+				[Query.equal('user', accountData.name)]
 			);
 			documents.documents.forEach((document) => {
 				const request: FileRequest = {
@@ -73,11 +69,11 @@
 					createdAt: new Date(document.$createdAt),
 					updatedAt: new Date(document.$updatedAt),
 					user: document.user,
-					permissions: document.$permissions
+					permissions: document.$permissions,
+					type: document.type
 				};
 				requests.push(request);
 			});
-			console.log(requests);
 			createdAt = new Date(accountData.$createdAt);
 			await getTeam();
 
@@ -92,26 +88,23 @@
 	});
 </script>
 
-<main>
+<main class="flex flex-col items-center">
 	{#if loaded}
 		<Navbar {accountData} {account} />
-		<h1>Profil</h1>
+		<h1 class="text-3xl font-semibold">Profil</h1>
 
 		{#if accountData}
-			<section>
-				<h2>Din info</h2>
+			<section class="container mt-5 flex flex-col items-center">
 				<h2>Namn: {accountData.name}</h2>
 				<p>E-post: {accountData.email}</p>
-				<p>Skapad: {createdAt.toLocaleString()}</p>
+				<p>Konto skapat: {createdAt.toLocaleString()}</p>
 			</section>
 		{/if}
 
-		{#if requests}
-			<section>
-				<h2>Dina förfrågningar</h2>
-				{#each requests as request}
-					<RequestCard {request} {teamMembership} {databases} {accountData} />
-				{/each}
+		{#if requests.length !== 0}
+			<section class="flex flex-col gap-3 mt-3">
+				<h2 class="text-2xl">Dina förfrågningar</h2>
+				<UserRequestList {client} {accountData} username={accountData.name} />
 			</section>
 		{/if}
 	{:else}
@@ -119,15 +112,6 @@
 	{/if}
 </main>
 
-<style>
-	main {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		width: 100%;
-	}
-
-	section {
-		width: 95%;
-	}
-</style>
+<svelte:head>
+	<title>Profil - Filerr</title>
+</svelte:head>

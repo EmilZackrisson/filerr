@@ -13,7 +13,7 @@
 
 <nav class="navbar bg-base-100">
 	<div class="navbar-start">
-		<h3>Filerr</h3>
+		<h3 class="text-2xl font-semibold">Filerr</h3>
 	</div>
 	<div class="navbar-center hidden lg:flex">
 		<ul class="menu menu-horizontal px-1">
@@ -30,7 +30,7 @@
 	</div>
 	<div class="navbar-end">
 		{#if accountData}
-			<button class="btn btn-primary" on:click={logout}>Logga ut</button>
+			<button class="btn" on:click={logout}>Logga ut</button>
 		{/if}
 	</div>
 </nav>

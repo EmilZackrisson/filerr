@@ -38,7 +38,10 @@
                 "SMTP_HOST": "***REMOVED***",
                 "SMTP_USER": "***REMOVED***",
                 "SMTP_PASS": "***REMOVED***",
-                "SMTP_EMAIL": "***REMOVED***"
+                "SMTP_EMAIL": "***REMOVED***",
+                "APPWRITE_FUNCTION_ENDPOINT": "***REMOVED***",
+                "APPWRITE_FUNCTION_PROJECT_ID":"***REMOVED***",
+                "APPWRITE_FUNCTION_API_KEY": "***REMOVED***"
             }
         }
     ]

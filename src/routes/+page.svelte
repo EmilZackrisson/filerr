@@ -50,10 +50,17 @@
 		<CreateRequest {client} {accountData} />
 		<RequestList {client} {accountData} />
 	{:else}
-		<h1 class="text-3xl font-semibold">Logga in för att skapa en förfrågan</h1>
-		<button on:click={login} class="btn btn-primary">Logga in med Authentik</button>
+		<div class="container flex flex-col items-center m-10">
+			<h1 class="text-3xl font-bold">Filerr</h1>
+			<h3 class="text-2xl">Logga in för att skapa en förfrågan</h3>
+			<button on:click={login} class="btn btn-primary m-3">Logga in med Authentik</button>
+		</div>
 	{/if}
 </main>
+
+<svelte:head>
+	<title>Filerr</title>
+</svelte:head>
 
 <style>
 	main {

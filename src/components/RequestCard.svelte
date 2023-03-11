@@ -78,7 +78,7 @@
 	async function begunRequest() {
 		await databases
 			.updateDocument(PUBLIC_APPWRITE_DATABASE_ID, PUBLIC_APPWRITE_COLLECTION_ID, request.id, {
-				status: 'Pågående'
+				status: 'Begun'
 			})
 			.then(() => {
 				toast.success('Markerade förfrågan som påbörjad!');

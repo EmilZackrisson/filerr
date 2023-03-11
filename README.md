@@ -1,12 +1,9 @@
 # Filerr
 
-This is a application where users can request all possible files from the admin.
+This is a application where users can request files from the admin.
+This project uses Appwrite as the backend.
 
-## How to setup
-
-1. Download the source files
-2. Edit you filerr public url in .env in the root directory
-
-### TODO
-
-- Add env to public_url
+## Features
+- OAuth 2 via Authentik
+- Appwrite Database
+- Notifications vith Appwrite functions

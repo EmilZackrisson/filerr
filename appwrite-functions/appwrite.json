@@ -1,0 +1,45 @@
+{
+    "projectId": "640872728237518d31dd",
+    "projectName": "Filerr",
+    "functions": [
+        {
+            "$id": "640c7f9b9b988196ebff",
+            "name": "Notify-admin-new",
+            "runtime": "node-16.0",
+            "path": "functions/ts-test",
+            "entrypoint": "src/index.js",
+            "ignore": [
+                "node_modules",
+                ".npm"
+            ],
+            "execute": [],
+            "events": [
+                "databases.*.collections.*.documents.*.create"
+            ],
+            "schedule": "",
+            "timeout": 15
+        },
+        {
+            "$id": "640cd860c0c97685ff43",
+            "name": "Notify-user-begun",
+            "runtime": "node-16.0",
+            "path": "functions/Notify-user-begun",
+            "entrypoint": "src/index.js",
+            "ignore": [
+                "node_modules",
+                ".npm"
+            ],
+            "execute": [],
+            "events": ["databases.*.collections.*.documents.*.update"],
+            "schedule": "",
+            "timeout": 15,
+            "variables":
+            {
+                "SMTP_HOST": "smtp.email.eu-stockholm-1.oci.oraclecloud.com",
+                "SMTP_USER": "ocid1.user.oc1..aaaaaaaalpmp7pkr7xay74zsgtxnlzkw3yhyorlj3lbq5odkhxuzbot5noqq@ocid1.tenancy.oc1..aaaaaaaah3atskb3zvf3ckffdya4exjbs3cj2dqokdqewchc4pjimtc52tiq.tj.com",
+                "SMTP_PASS": "wYs$k4sMEG4}le$Cz22H",
+                "SMTP_EMAIL": "noreply@emilzackrisson.se"
+            }
+        }
+    ]
+}

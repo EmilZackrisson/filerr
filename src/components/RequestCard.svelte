@@ -74,6 +74,19 @@
 				toast.error(error.message);
 			});
 	}
+
+	async function begunRequest() {
+		await databases
+			.updateDocument(PUBLIC_APPWRITE_DATABASE_ID, PUBLIC_APPWRITE_COLLECTION_ID, request.id, {
+				status: 'Pågående'
+			})
+			.then(() => {
+				toast.success('Markerade förfrågan som påbörjad!');
+			})
+			.catch((error) => {
+				toast.error(error.message);
+			});
+	}
 </script>
 
 <section class="bg-base-200">
@@ -102,6 +115,22 @@
 				>Uppdatera</button
 			>
 			<button class="btn btn-success" on:click={() => completeRequest()}>Markera som klar</button>
+			<button class="btn btn-warning" on:click={() => begunRequest()}>Markera som påbörjad</button>
+			<button class="btn bg-warning text-black" on:click={deleteRequest}>Ta bort</button>
+		</div>
+	{/if}
+	{#if request.user === accountData.$id}
+		{#if updateMode}
+			<form on:submit|preventDefault={updateRequest}>
+				<input type="text" id="fileName" name="fileName" bind:value={request.fileName} />
+				<input type="text" id="text" name="text" bind:value={request.text} />
+				<button type="submit">Skicka</button>
+			</form>
+		{/if}
+		<div class="admin-action-row">
+			<button class="btn btn-secondary" on:click={() => (updateMode = !updateMode)}
+				>Uppdatera</button
+			>
 			<button class="btn bg-warning text-black" on:click={deleteRequest}>Ta bort</button>
 		</div>
 	{/if}

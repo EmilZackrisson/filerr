@@ -30,7 +30,7 @@ module.exports = async function (req: any, res: any) {
 	// const teams = new sdk.Teams(client);
 	const users = new Users(client);
 
-	if (req.variables['APPWRITE_FUNCTION_EVENT_DATA'].status !== 'Väntande') {
+	if (JSON.parse(req.variables['APPWRITE_FUNCTION_EVENT_DATA']).status !== 'Begun') {
 		res.send('Admin har inte påbörjat');
 		return;
 	}

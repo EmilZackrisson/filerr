@@ -60,7 +60,7 @@ module.exports = function (req, res) {
                     console.log('Request: ', req);
                     client = new node_appwrite_1.Client();
                     users = new node_appwrite_1.Users(client);
-                    if (req.variables['APPWRITE_FUNCTION_EVENT_DATA'].status !== 'Väntande') {
+                    if (JSON.parse(req.variables['APPWRITE_FUNCTION_EVENT_DATA']).status !== 'Begun') {
                         res.send('Admin har inte påbörjat');
                         return [2 /*return*/];
                     }

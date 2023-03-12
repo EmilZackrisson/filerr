@@ -125,8 +125,9 @@
 	});
 </script>
 
-<section>
+<section class="container flex flex-col gap-5 mb-5">
 	<Toaster />
+	<h2 class="text-2xl">Pågående förfrågningar</h2>
 	{#if loadedRequests}
 		{#each requests as request}
 			{#if !request.completed}
@@ -139,13 +140,3 @@
 		<Loader message="Laddar ansökningar" />
 	{/if}
 </section>
-
-<style>
-	section {
-		width: 100%;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 5px;
-	}
-</style>

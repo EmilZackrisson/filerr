@@ -1,5 +1,5 @@
 {
-    "projectId": "***REMOVED***",
+    "projectId": "640872728237518d31dd",
     "projectName": "Filerr",
     "functions": [
         {
@@ -30,19 +30,13 @@
                 ".npm"
             ],
             "execute": [],
+
             "events": [
                 "databases.*.collections.*.documents.*.update"
             ],
             "schedule": "",
             "timeout": 15,
             "variables": {
-                "SMTP_HOST": "***REMOVED***",
-                "SMTP_USER": "***REMOVED***",
-                "SMTP_PASS": "***REMOVED***",
-                "SMTP_EMAIL": "***REMOVED***",
-                "APPWRITE_FUNCTION_ENDPOINT": "***REMOVED***",
-                "APPWRITE_FUNCTION_PROJECT_ID": "***REMOVED***",
-                "APPWRITE_FUNCTION_API_KEY": "***REMOVED***"
             }
         },
         {

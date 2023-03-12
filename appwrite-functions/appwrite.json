@@ -30,19 +30,34 @@
                 ".npm"
             ],
             "execute": [],
-            "events": ["databases.*.collections.*.documents.*.update"],
+            "events": [
+                "databases.*.collections.*.documents.*.update"
+            ],
             "schedule": "",
             "timeout": 15,
-            "variables":
-            {
+            "variables": {
                 "SMTP_HOST": "smtp.email.eu-stockholm-1.oci.oraclecloud.com",
                 "SMTP_USER": "ocid1.user.oc1..aaaaaaaalpmp7pkr7xay74zsgtxnlzkw3yhyorlj3lbq5odkhxuzbot5noqq@ocid1.tenancy.oc1..aaaaaaaah3atskb3zvf3ckffdya4exjbs3cj2dqokdqewchc4pjimtc52tiq.tj.com",
                 "SMTP_PASS": "wYs$k4sMEG4}le$Cz22H",
                 "SMTP_EMAIL": "noreply@emilzackrisson.se",
                 "APPWRITE_FUNCTION_ENDPOINT": "https://appwrite.emilzackrisson.se/v1",
-                "APPWRITE_FUNCTION_PROJECT_ID":"640872728237518d31dd",
+                "APPWRITE_FUNCTION_PROJECT_ID": "640872728237518d31dd",
                 "APPWRITE_FUNCTION_API_KEY": "150ca218bf62ccafed717924226574596c507ff912c860c746b3fab0031aa0aca76b4e1b4110e8545d8a36e51f8d0fd0a39560242ec229a63ef286b25b21461174a0c3f6642f59376d0d4c1464992a9a534d9574715f5955a7eb317af5be6c45471a740f9b3da0f325c8698659e768465c8ae09a03fa840f14f33f226343dfab"
             }
+        },
+        {
+            "$id": "640d20d717651f26fd8f",
+            "name": "python-test",
+            "runtime": "python-3.9",
+            "path": "functions/python-test",
+            "entrypoint": "src/index.py",
+            "ignore": [
+                "__pypackages__"
+            ],
+            "execute": [],
+            "events": ["databases.*.collections.*.documents.*.create"],
+            "schedule": "",
+            "timeout": 15
         }
     ]
 }

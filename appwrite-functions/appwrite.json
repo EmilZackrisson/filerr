@@ -30,19 +30,34 @@
                 ".npm"
             ],
             "execute": [],
-            "events": ["databases.*.collections.*.documents.*.update"],
+            "events": [
+                "databases.*.collections.*.documents.*.update"
+            ],
             "schedule": "",
             "timeout": 15,
-            "variables":
-            {
+            "variables": {
                 "SMTP_HOST": "***REMOVED***",
                 "SMTP_USER": "***REMOVED***",
                 "SMTP_PASS": "***REMOVED***",
                 "SMTP_EMAIL": "***REMOVED***",
                 "APPWRITE_FUNCTION_ENDPOINT": "***REMOVED***",
-                "APPWRITE_FUNCTION_PROJECT_ID":"***REMOVED***",
+                "APPWRITE_FUNCTION_PROJECT_ID": "***REMOVED***",
                 "APPWRITE_FUNCTION_API_KEY": "***REMOVED***"
             }
+        },
+        {
+            "$id": "640d20d717651f26fd8f",
+            "name": "python-test",
+            "runtime": "python-3.9",
+            "path": "functions/python-test",
+            "entrypoint": "src/index.py",
+            "ignore": [
+                "__pypackages__"
+            ],
+            "execute": [],
+            "events": ["databases.*.collections.*.documents.*.create"],
+            "schedule": "",
+            "timeout": 15
         }
     ]
 }

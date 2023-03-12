@@ -50,7 +50,11 @@
 	}
 </script>
 
-<form on:submit|preventDefault={submitRequest} class="container bg-base-200" id="submitForm">
+<form
+	on:submit|preventDefault={submitRequest}
+	class="container bg-base-200 p-3 rounded-lg flex flex-col"
+	id="submitForm"
+>
 	<Toaster />
 	<label for="fileName" class="label">Filnamn</label>
 	<input type="text" name="fileName" id="fileName" class="input w-full" />
@@ -63,31 +67,5 @@
 		<option value="Program">Program</option>
 		<option value="Annat">Annat</option>
 	</select>
-	<button type="submit" class="btn btn-primary">Skicka förfrågan</button>
+	<button type="submit" class="btn btn-primary mt-4">Skicka förfrågan</button>
 </form>
-
-<style>
-	form {
-		display: flex;
-		flex-direction: column;
-		gap: 3px;
-		padding: 15px;
-		border-radius: 5px;
-	}
-	label {
-		display: block;
-	}
-	input,
-	textarea {
-		display: block;
-	}
-	button {
-		margin-top: 10px;
-	}
-
-	@media only screen and (max-width: 600px) {
-		form {
-			width: 95%;
-		}
-	}
-</style>

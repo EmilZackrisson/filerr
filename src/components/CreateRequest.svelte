@@ -10,6 +10,7 @@
 
 	export let client: Client;
 	export let accountData: Models.Account<Models.Preferences>;
+	const account = new Account(client);
 
 	const databases = new Databases(client);
 
@@ -32,14 +33,20 @@
 				type: formData.get('type')?.toString()
 			};
 			try {
-				await databases.createDocument(
-					PUBLIC_APPWRITE_DATABASE_ID,
-					PUBLIC_APPWRITE_COLLECTION_ID,
-					ID.unique(),
-					request,
-					[Permission.update(Role.user(accountData.$id))]
-				);
-				toast.success('Din förfrågan har skickats!');
+				await databases
+					.createDocument(
+						PUBLIC_APPWRITE_DATABASE_ID,
+						PUBLIC_APPWRITE_COLLECTION_ID,
+						ID.unique(),
+						request,
+						[Permission.update(Role.user(accountData.$id))]
+					)
+					.then(async () => {
+						await sendNotification(request.name!, request.text!, request.type!).then(() => {
+							toast.success('Din förfrågan har skickats!');
+						});
+					});
+
 				// @ts-expect-error
 				e.target.reset();
 			} catch (error) {
@@ -47,6 +54,35 @@
 				toast.error(error.message);
 			}
 		}
+	}
+
+	async function sendNotification(filename: string, text: string, type: string) {
+		const session = await account.getSession('current');
+		await fetch(
+			'https://tytto0n6yk.execute-api.eu-north-1.amazonaws.com/prod-notify-new/notify/new',
+			{
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				mode: 'no-cors',
+				body: JSON.stringify({
+					eventType: 'newRequest',
+					sessionId: session.$id,
+					userId: accountData.$id,
+					requestData: {
+						user: accountData.name,
+						filename: filename,
+						text: text,
+						type: type
+					}
+				})
+			}
+		).catch((e) => {
+			console.error(e);
+			toast.error('Kunde inte skicka notifikation');
+			return e;
+		});
 	}
 </script>
 

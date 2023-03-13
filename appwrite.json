@@ -1,0 +1,20 @@
+{
+    "projectId": "640872728237518d31dd",
+    "projectName": "Filerr",
+    "functions": [
+        {
+            "$id": "640ddd12ad227566e4ed",
+            "name": "Notify-new-py",
+            "runtime": "python-3.9",
+            "path": "functions/Notify-new-py",
+            "entrypoint": "src/index.py",
+            "ignore": [
+                "__pypackages__"
+            ],
+            "execute": [],
+            "events": ["databases.*.collections.*.documents.*.create"],
+            "schedule": "",
+            "timeout": 15
+        }
+    ]
+}

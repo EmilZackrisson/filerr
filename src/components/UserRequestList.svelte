@@ -133,7 +133,14 @@
 	{#if loadedRequests}
 		{#each requests as request}
 			{#key uniqueKey}
-				<RequestCard {request} {teamMembership} {databases} {accountData} allowDeletion={false} />
+				<RequestCard
+					{request}
+					{teamMembership}
+					{databases}
+					{accountData}
+					allowDeletion={false}
+					{client}
+				/>
 			{/key}
 		{/each}
 	{:else}

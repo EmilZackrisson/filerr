@@ -1,5 +1,6 @@
 <script lang="ts">
-	import type { Models, Databases, Permission } from 'appwrite';
+	import type { Models, Databases, Permission, Client } from 'appwrite';
+	import { Account } from 'appwrite';
 	import toast, { Toaster } from 'svelte-french-toast';
 	import {
 		PUBLIC_APPWRITE_TEAM_ADMIN_ID,
@@ -25,6 +26,9 @@
 	export let databases: Databases;
 	export let accountData: Models.Account<Models.Preferences>;
 	export let allowDeletion: boolean;
+	export let client: Client;
+
+	const account = new Account(client);
 
 	let updateMode: boolean = false;
 
@@ -45,7 +49,8 @@
 				completedBy: accountData.name,
 				type: request.type
 			})
-			.then(() => {
+			.then(async (document) => {
+				await sendUserEmail(document.$id, document.$databaseId, document.$collectionId);
 				toast.success('Markerade förfrågan som klar!');
 			})
 			.catch((error) => {
@@ -92,6 +97,32 @@
 			.catch((error) => {
 				toast.error(error.message);
 			});
+	}
+
+	async function sendUserEmail(documentId: string, databaseId: string, collectionId: string) {
+		const session = await account.getSession('current');
+		await fetch(
+			'https://tytto0n6yk.execute-api.eu-north-1.amazonaws.com/prod-notify-new/notify/completed',
+			{
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				mode: 'no-cors',
+				body: JSON.stringify({
+					eventType: 'completedRequest',
+					sessionId: session.$id,
+					userId: accountData.$id,
+					documentId: documentId,
+					databaseId: databaseId,
+					collectionId: collectionId
+				})
+			}
+		).catch((e) => {
+			console.error(e);
+			toast.error('Kunde inte skicka notifikation');
+			return e;
+		});
 	}
 
 	const options: Intl.DateTimeFormatOptions = {

@@ -1,12 +1,11 @@
 {
-  "name": "notify",
+  "name": "notifycompleted",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx tsc index.ts",
-    "deploy": "aws lambda update-function-code --function-name NotifyFilerr --zip-file fileb://function.zip"
+    "build": "npx tsc index.ts"
   },
   "author": "",
   "license": "ISC",
@@ -15,7 +14,6 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
-    "cross-fetch": "^3.1.5",
     "node-appwrite": "^8.2.0",
     "nodemailer": "^6.9.1"
   }

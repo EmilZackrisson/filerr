@@ -36,9 +36,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-var cross_fetch_1 = require("cross-fetch");
-var sdk = require("node-appwrite");
 var nodemailer = require("nodemailer");
+var sdk = require("node-appwrite");
 var client = new sdk.Client();
 var users = new sdk.Users(client);
 var database = new sdk.Databases(client);
@@ -50,65 +49,56 @@ client
 // Handler
 exports.handler = function (event, context, callback) {
     return __awaiter(this, void 0, void 0, function () {
-        var body, _a, _b, completedRequestBody, user, request, error_1;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
+        var body, user, request, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
                 case 0:
                     console.log('## ENVIRONMENT VARIABLES: ' + serialize(process.env));
                     console.log('## CONTEXT: ' + serialize(context));
                     console.log('## EVENT: ' + serialize(event));
                     console.log(event);
-                    _c.label = 1;
+                    _a.label = 1;
                 case 1:
-                    _c.trys.push([1, 11, , 12]);
+                    _a.trys.push([1, 9, , 10]);
                     body = event;
-                    if (!checkSession(body.userId, body.sessionId)) return [3 /*break*/, 9];
-                    if (!(body.eventType === 'newRequest')) return [3 /*break*/, 3];
-                    console.log('New request event received');
-                    _a = callback;
-                    _b = formatResponse;
-                    return [4 /*yield*/, notifyNew(body)];
-                case 2:
-                    _a.apply(void 0, [_b.apply(void 0, [_c.sent()])]);
-                    return [3 /*break*/, 8];
-                case 3:
-                    if (!(body.eventType === 'completedRequest')) return [3 /*break*/, 7];
+                    if (!checkSession(body.userId, body.sessionId)) return [3 /*break*/, 7];
+                    if (!(body.eventType === 'completedRequest')) return [3 /*break*/, 5];
                     console.log('Completed request event received');
-                    completedRequestBody = body;
-                    return [4 /*yield*/, getUser(completedRequestBody.userId)];
-                case 4:
-                    user = _c.sent();
-                    return [4 /*yield*/, getDocument(completedRequestBody.documentId, completedRequestBody.databaseId, completedRequestBody.collectionId)];
-                case 5:
-                    request = _c.sent();
+                    return [4 /*yield*/, getUser(body.userId)];
+                case 2:
+                    user = _a.sent();
+                    return [4 /*yield*/, getDocument(body.requestData.$id)];
+                case 3:
+                    request = _a.sent();
                     return [4 /*yield*/, sendUserEmail(user.email, request.name).then(function () {
                             console.log('Email sent');
                             callback(formatResponse({ statusCode: 200, body: 'Success' }));
                         })];
-                case 6:
-                    _c.sent();
-                    return [3 /*break*/, 8];
-                case 7:
+                case 4:
+                    _a.sent();
+                    return [3 /*break*/, 6];
+                case 5:
                     console.log('Unknown event type received');
                     callback(formatError({ statusCode: 400, code: 'Bad Request', message: 'Unknown event type' }));
-                    _c.label = 8;
+                    _a.label = 6;
+                case 6: return [3 /*break*/, 8];
+                case 7:
+                    console.log('Invalid session from user: ', body.userId);
+                    callback(formatError({ statusCode: 401, code: 'Unauthorized', message: 'Invalid session' }));
+                    _a.label = 8;
                 case 8: return [3 /*break*/, 10];
                 case 9:
-                    console.log('Invalid session from user: ', body.requestData.user);
-                    callback(formatError({ statusCode: 401, code: 'Unauthorized', message: 'Invalid session' }));
-                    _c.label = 10;
-                case 10: return [3 /*break*/, 12];
-                case 11:
-                    error_1 = _c.sent();
+                    error_1 = _a.sent();
                     console.error('Error while handling event: ', error_1);
                     callback(formatError({ statusCode: 500, code: 'Internal Server Error', message: error_1 }));
-                    return [3 /*break*/, 12];
-                case 12: return [2 /*return*/];
+                    return [3 /*break*/, 10];
+                case 10: return [2 /*return*/];
             }
         });
     });
 };
 var formatResponse = function (body) {
+    console.log('Response: ', body);
     var response = {
         statusCode: 200,
         headers: {
@@ -138,89 +128,6 @@ var formatError = function (error) {
 var serialize = function (object) {
     return JSON.stringify(object, null, 2);
 };
-function notifyNew(event) {
-    return __awaiter(this, void 0, void 0, function () {
-        var eventBody;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    eventBody = event;
-                    return [4 /*yield*/, sendDiscord(eventBody.requestData.user, eventBody.requestData.filename, eventBody.requestData.text, eventBody.requestData.type)
-                            .then(function () {
-                            return formatResponse('OK');
-                        })["catch"](function () {
-                            return formatError({
-                                statusCode: 500,
-                                code: 'Internal Server Error',
-                                message: 'Error while sending new request to Discord'
-                            });
-                        })];
-                case 1:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
-        });
-    });
-}
-function sendDiscord(user, filename, text, type) {
-    return __awaiter(this, void 0, void 0, function () {
-        var params, WEBHOOK_URL, error_2;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    params = {
-                        username: 'Filerr',
-                        embeds: [
-                            {
-                                title: 'Ny förfrågan',
-                                color: 15258703,
-                                url: 'https://filerr.emilzackrisson.se',
-                                author: {
-                                    name: user
-                                },
-                                description: "".concat(user, " f\u00F6rfr\u00E5gade om filen ").concat(filename, "."),
-                                fields: [
-                                    {
-                                        name: 'Typ',
-                                        value: type,
-                                        inline: true
-                                    },
-                                    {
-                                        name: 'Text',
-                                        value: text,
-                                        inline: false
-                                    }
-                                ]
-                            }
-                        ]
-                    };
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 3, , 4]);
-                    WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL;
-                    console.log('Sending new request to Discord: ', params);
-                    console.log('Webhook URL: ', WEBHOOK_URL);
-                    return [4 /*yield*/, (0, cross_fetch_1["default"])(WEBHOOK_URL, {
-                            method: 'POST',
-                            headers: {
-                                'Content-type': 'application/json'
-                            },
-                            body: JSON.stringify(params)
-                        }).then(function (res) {
-                            console.log('Discord webhook response: ', serialize(res));
-                        })];
-                case 2:
-                    _a.sent();
-                    return [3 /*break*/, 4];
-                case 3:
-                    error_2 = _a.sent();
-                    console.error('Error while sending new request to Discord: ', error_2);
-                    return [2 /*return*/, formatError(error_2)];
-                case 4: return [2 /*return*/];
-            }
-        });
-    });
-}
 function checkSession(userId, sessionId) {
     return __awaiter(this, void 0, void 0, function () {
         var userSessions, session;
@@ -230,10 +137,13 @@ function checkSession(userId, sessionId) {
                 case 1:
                     userSessions = _a.sent();
                     session = userSessions.sessions.find(function (session) { return session.$id === sessionId; });
-                    if (session) {
+                    if (session.$id === sessionId) {
                         return [2 /*return*/, true];
                     }
-                    return [2 /*return*/, false];
+                    else {
+                        return [2 /*return*/, false];
+                    }
+                    return [2 /*return*/];
             }
         });
     });
@@ -251,12 +161,12 @@ function getUser(userId) {
         });
     });
 }
-function getDocument(documentId, databaseId, collectionId) {
+function getDocument(documentId) {
     return __awaiter(this, void 0, void 0, function () {
         var document;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, database.getDocument(databaseId, collectionId, documentId)];
+                case 0: return [4 /*yield*/, database.get(documentId)];
                 case 1:
                     document = _a.sent();
                     return [2 /*return*/, document];
@@ -266,7 +176,7 @@ function getDocument(documentId, databaseId, collectionId) {
 }
 function sendUserEmail(userEmail, filename) {
     return __awaiter(this, void 0, void 0, function () {
-        var transporter, info, error_3;
+        var transporter, info, error_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -292,9 +202,9 @@ function sendUserEmail(userEmail, filename) {
                     console.log('Email sent: %s', info.messageId);
                     return [3 /*break*/, 3];
                 case 2:
-                    error_3 = _a.sent();
-                    console.error('Error while sending email: ', error_3);
-                    return [2 /*return*/, formatError({ statusCode: 500, code: 'Internal Server Error', message: error_3 })];
+                    error_2 = _a.sent();
+                    console.error('Error while sending email: ', error_2);
+                    return [2 /*return*/, formatError({ statusCode: 500, code: 'Internal Server Error', message: error_2 })];
                 case 3: return [2 /*return*/];
             }
         });

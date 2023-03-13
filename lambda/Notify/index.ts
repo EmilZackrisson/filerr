@@ -1,8 +1,10 @@
 import fetch from 'cross-fetch';
 import sdk = require('node-appwrite');
+import * as nodemailer from 'nodemailer';
 
 const client = new sdk.Client();
 const users = new sdk.Users(client);
+const database = new sdk.Databases(client);
 
 // Init Appwrite SDK
 client
@@ -22,6 +24,19 @@ exports.handler = async function (event: any, context: any, callback: any) {
 			if (body.eventType === 'newRequest') {
 				console.log('New request event received');
 				callback(formatResponse(await notifyNew(body)));
+			} else if (body.eventType === 'completedRequest') {
+				console.log('Completed request event received');
+				const completedRequestBody: body = body;
+				const user = await getUser(completedRequestBody.userId);
+				const document: requestDocument = await getDocument(
+					completedRequestBody.documentId,
+					completedRequestBody.databaseId,
+					completedRequestBody.collectionId
+				);
+				await sendUserEmail(user.email, document).then(() => {
+					console.log('Email sent');
+					callback(formatResponse({ statusCode: 200, body: 'Success' }));
+				});
 			} else {
 				console.log('Unknown event type received');
 				callback(
@@ -39,7 +54,6 @@ exports.handler = async function (event: any, context: any, callback: any) {
 };
 
 var formatResponse = function (body: any) {
-	console.log('Response: ', body);
 	var response = {
 		statusCode: 200,
 		headers: {
@@ -148,6 +162,42 @@ async function checkSession(userId: string, sessionId: string) {
 	return false;
 }
 
+async function getUser(userId: string) {
+	const user = await users.get(userId);
+	return user;
+}
+
+async function getDocument(documentId: string, databaseId: string, collectionId: string) {
+	const document: any = await database.getDocument(databaseId, collectionId, documentId);
+	return document;
+}
+
+async function sendUserEmail(userEmail: string, document: requestDocument) {
+	try {
+		let transporter = nodemailer.createTransport({
+			host: process.env.SMTP_HOST,
+			port: 587,
+			secure: false, // true for 465, false for other ports
+			auth: {
+				user: process.env.SMTP_USER, // generated ethereal user
+				pass: process.env.SMTP_PASS // generated ethereal password
+			}
+		});
+
+		let info = await transporter.sendMail({
+			from: `"Filerr" <${process.env.SMTP_EMAIL}>`, // sender address
+			to: userEmail, // list of receivers
+			subject: `${document.name} är redo!`, // Subject line
+			text: `${document.name} är redo!\n https://filerr.emilzackrisson.se"https://filerr.emilzackrisson.se`, // plain text body
+			html: `<h1>${document.name} är redo!</h1><a href="https://filerr.emilzackrisson.se"https://filerr.emilzackrisson.se</a>` // html body
+		});
+		console.log('Email sent: %s', info.messageId);
+	} catch (error) {
+		console.error('Error while sending email: ', error);
+		return formatError({ statusCode: 500, code: 'Internal Server Error', message: error });
+	}
+}
+
 type newRequest = {
 	eventType: string;
 	userId: string;
@@ -158,4 +208,25 @@ type newRequest = {
 		text: string;
 		type: string;
 	};
+};
+
+type body = {
+	eventType: string;
+	userId: string;
+	sessionId: string;
+	documentId: string;
+	databaseId: string;
+	collectionId: string;
+};
+
+type requestDocument = sdk.Models.Document & {
+	user: string;
+	name: string;
+	text: string;
+	type: string;
+	completed: boolean;
+	completedAt: Date;
+	completedBy: string;
+	completedMessage: string;
+	status: string;
 };

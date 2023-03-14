@@ -54,7 +54,7 @@ exports.handler = function (event, context) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    console.log('## ENVIRONMENT VARIABLES: ' + serialize(process.env));
+                    //console.log('## ENVIRONMENT VARIABLES: ' + serialize(process.env));
                     console.log('## CONTEXT: ' + serialize(context));
                     console.log('## EVENT: ' + serialize(event));
                     console.log(event);

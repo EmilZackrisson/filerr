@@ -12,3 +12,4 @@ vite.config.ts.timestamp-*
 src/routes/settings/+page.svelte
 .env.production
 .env.development
+lambda/Notify/index.js

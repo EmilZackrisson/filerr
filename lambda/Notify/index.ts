@@ -14,7 +14,7 @@ client
 
 // Handler
 exports.handler = async function (event: any, context: any) {
-	console.log('## ENVIRONMENT VARIABLES: ' + serialize(process.env));
+	//console.log('## ENVIRONMENT VARIABLES: ' + serialize(process.env));
 	console.log('## CONTEXT: ' + serialize(context));
 	console.log('## EVENT: ' + serialize(event));
 	console.log(event);

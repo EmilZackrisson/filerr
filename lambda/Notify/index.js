@@ -50,7 +50,7 @@ client
 // Handler
 exports.handler = function (event, context, callback) {
     return __awaiter(this, void 0, void 0, function () {
-        var body, _a, _b, completedRequestBody, user, request, error_1;
+        var body, _a, _b, completedRequestBody, user, document_1, error_1;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
@@ -80,8 +80,8 @@ exports.handler = function (event, context, callback) {
                     user = _c.sent();
                     return [4 /*yield*/, getDocument(completedRequestBody.documentId, completedRequestBody.databaseId, completedRequestBody.collectionId)];
                 case 5:
-                    request = _c.sent();
-                    return [4 /*yield*/, sendUserEmail(user.email, request.name).then(function () {
+                    document_1 = _c.sent();
+                    return [4 /*yield*/, sendUserEmail(user.email, document_1).then(function () {
                             console.log('Email sent');
                             callback(formatResponse({ statusCode: 200, body: 'Success' }));
                         })];
@@ -264,7 +264,7 @@ function getDocument(documentId, databaseId, collectionId) {
         });
     });
 }
-function sendUserEmail(userEmail, filename) {
+function sendUserEmail(userEmail, document) {
     return __awaiter(this, void 0, void 0, function () {
         var transporter, info, error_3;
         return __generator(this, function (_a) {
@@ -283,9 +283,9 @@ function sendUserEmail(userEmail, filename) {
                     return [4 /*yield*/, transporter.sendMail({
                             from: "\"Filerr\" <".concat(process.env.SMTP_EMAIL, ">"),
                             to: userEmail,
-                            subject: "".concat(filename, " \u00E4r redo!"),
-                            text: "".concat(filename, " \u00E4r redo!"),
-                            html: "<h1>".concat(filename, " \u00E4r redo!</h1>") // html body
+                            subject: "".concat(document.name, " \u00E4r redo!"),
+                            text: "".concat(document.name, " \u00E4r redo!\n https://filerr.emilzackrisson.se\"https://filerr.emilzackrisson.se"),
+                            html: "<h1>".concat(document.name, " \u00E4r redo!</h1>\n\t\t\t<p>").concat(document.completedMessage, "</p>\n\t\t\t<br>\n\t\t\t<a href=\"https://filerr.emilzackrisson.se\">https://filerr.emilzackrisson.se</a>") // html body
                         })];
                 case 1:
                     info = _a.sent();

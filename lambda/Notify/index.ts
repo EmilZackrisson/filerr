@@ -189,7 +189,10 @@ async function sendUserEmail(userEmail: string, document: requestDocument) {
 			to: userEmail, // list of receivers
 			subject: `${document.name} är redo!`, // Subject line
 			text: `${document.name} är redo!\n https://filerr.emilzackrisson.se"https://filerr.emilzackrisson.se`, // plain text body
-			html: `<h1>${document.name} är redo!</h1><a href="https://filerr.emilzackrisson.se"https://filerr.emilzackrisson.se</a>` // html body
+			html: `<h1>${document.name} är redo!</h1>
+			<p>${document.completedMessage}</p>
+			<br>
+			<a href="https://filerr.emilzackrisson.se">https://filerr.emilzackrisson.se</a>` // html body
 		});
 		console.log('Email sent: %s', info.messageId);
 	} catch (error) {

@@ -2,17 +2,17 @@
 // for information about these interfaces
 // and what to do when importing types
 declare namespace App {
-	interface FileRequest {
-		fileName: string;
-		text?: string;
-		completed?: boolean;
-		completedAt?: Date;
-		completedBy?: string;
+	type requestDocument = Models.Document & {
 		user: string;
-		id: ID;
-		createdAt: Date;
-		updatedAt: Date;
-	}
+		name: string;
+		text: string;
+		type: string;
+		completed: boolean;
+		completedAt: Date;
+		completedBy: string;
+		completedMessage: string;
+		status: string;
+	};
 	// interface Error {}
 	// interface Locals {}
 	// interface PageData {}

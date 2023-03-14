@@ -17,10 +17,9 @@ exports.handler = async function (event: any, context: any) {
 	//console.log('## ENVIRONMENT VARIABLES: ' + serialize(process.env));
 	console.log('## CONTEXT: ' + serialize(context));
 	console.log('## EVENT: ' + serialize(event));
-	console.log(event);
 	try {
 		const body = event;
-		if (checkSession(body.userId, body.sessionId)) {
+		if (await checkSession(body.userId, body.sessionId)) {
 			if (body.eventType === 'newRequest') {
 				console.log('New request event received');
 				await notifyNew(body);
@@ -48,6 +47,10 @@ exports.handler = async function (event: any, context: any) {
 		}
 	} catch (error) {
 		console.error('Error while handling event: ', error);
+		const errorMessage: string = error.message;
+		if (errorMessage.includes('User with the requested ID could not be found')) {
+			return formatError({ statusCode: 401, code: 'Unauthorized', message: 'Invalid session' });
+		}
 		return formatError({ statusCode: 500, code: 'Internal Server Error', message: error });
 	}
 };
@@ -67,7 +70,7 @@ var formatResponse = function (body: any) {
 	return response;
 };
 
-var formatError = function (error: any) {
+var formatError = function (error: error) {
 	console.log('Error: ', error);
 	var response = {
 		statusCode: error.statusCode,
@@ -111,7 +114,7 @@ async function sendDiscord(user: string, filename: string, text?: string, type?:
 		embeds: [
 			{
 				title: 'Ny förfrågan',
-				color: 15258703,
+				color: 65280,
 				url: 'https://filerr.emilzackrisson.se',
 				author: {
 					name: user
@@ -154,9 +157,12 @@ async function sendDiscord(user: string, filename: string, text?: string, type?:
 
 async function checkSession(userId: string, sessionId: string) {
 	const userSessions = await users.listSessions(userId);
-	const session = userSessions.sessions.find((session: any) => session.$id === sessionId);
-	if (session) {
-		return true;
+	const sessionArray = userSessions.sessions;
+	for (let index = 0; index < sessionArray.length; index++) {
+		const element = sessionArray[index];
+		if (element.$id === sessionId) {
+			return true;
+		}
 	}
 	return false;
 }
@@ -231,4 +237,10 @@ type requestDocument = sdk.Models.Document & {
 	completedBy: string;
 	completedMessage: string;
 	status: string;
+};
+
+type error = {
+	statusCode: number;
+	code: string;
+	message: string;
 };

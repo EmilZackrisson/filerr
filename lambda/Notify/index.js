@@ -50,55 +50,60 @@ client
 // Handler
 exports.handler = function (event, context) {
     return __awaiter(this, void 0, void 0, function () {
-        var body, completedRequestBody, user, document_1, error_1;
+        var body, completedRequestBody, user, document_1, error_1, errorMessage;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     //console.log('## ENVIRONMENT VARIABLES: ' + serialize(process.env));
                     console.log('## CONTEXT: ' + serialize(context));
                     console.log('## EVENT: ' + serialize(event));
-                    console.log(event);
                     _a.label = 1;
                 case 1:
-                    _a.trys.push([1, 11, , 12]);
+                    _a.trys.push([1, 12, , 13]);
                     body = event;
-                    if (!checkSession(body.userId, body.sessionId)) return [3 /*break*/, 9];
-                    if (!(body.eventType === 'newRequest')) return [3 /*break*/, 3];
+                    return [4 /*yield*/, checkSession(body.userId, body.sessionId)];
+                case 2:
+                    if (!_a.sent()) return [3 /*break*/, 10];
+                    if (!(body.eventType === 'newRequest')) return [3 /*break*/, 4];
                     console.log('New request event received');
                     return [4 /*yield*/, notifyNew(body)];
-                case 2:
+                case 3:
                     _a.sent();
                     return [2 /*return*/, formatResponse('Success')];
-                case 3:
-                    if (!(body.eventType === 'completedRequest')) return [3 /*break*/, 7];
+                case 4:
+                    if (!(body.eventType === 'completedRequest')) return [3 /*break*/, 8];
                     console.log('Completed request event received');
                     completedRequestBody = body;
                     return [4 /*yield*/, getUser(completedRequestBody.userId)];
-                case 4:
+                case 5:
                     user = _a.sent();
                     return [4 /*yield*/, getDocument(completedRequestBody.documentId, completedRequestBody.databaseId, completedRequestBody.collectionId)];
-                case 5:
+                case 6:
                     document_1 = _a.sent();
                     return [4 /*yield*/, sendUserEmail(user.email, document_1).then(function () {
                             console.log('Email sent');
                             return formatResponse('Success');
                         })];
-                case 6:
-                    _a.sent();
-                    return [3 /*break*/, 8];
                 case 7:
+                    _a.sent();
+                    return [3 /*break*/, 9];
+                case 8:
                     console.log('Unknown event type received');
                     return [2 /*return*/, formatError({ statusCode: 400, code: 'Bad Request', message: 'Unknown event type' })];
-                case 8: return [3 /*break*/, 10];
-                case 9:
+                case 9: return [3 /*break*/, 11];
+                case 10:
                     console.log('Invalid session from user: ', body.requestData.user);
                     return [2 /*return*/, formatError({ statusCode: 401, code: 'Unauthorized', message: 'Invalid session' })];
-                case 10: return [3 /*break*/, 12];
-                case 11:
+                case 11: return [3 /*break*/, 13];
+                case 12:
                     error_1 = _a.sent();
                     console.error('Error while handling event: ', error_1);
+                    errorMessage = error_1.message;
+                    if (errorMessage.includes('User with the requested ID could not be found')) {
+                        return [2 /*return*/, formatError({ statusCode: 401, code: 'Unauthorized', message: 'Invalid session' })];
+                    }
                     return [2 /*return*/, formatError({ statusCode: 500, code: 'Internal Server Error', message: error_1 })];
-                case 12: return [2 /*return*/];
+                case 13: return [2 /*return*/];
             }
         });
     });
@@ -168,7 +173,7 @@ function sendDiscord(user, filename, text, type) {
                         embeds: [
                             {
                                 title: 'Ny förfrågan',
-                                color: 15258703,
+                                color: 65280,
                                 url: 'https://filerr.emilzackrisson.se',
                                 author: {
                                     name: user
@@ -218,15 +223,18 @@ function sendDiscord(user, filename, text, type) {
 }
 function checkSession(userId, sessionId) {
     return __awaiter(this, void 0, void 0, function () {
-        var userSessions, session;
+        var userSessions, sessionArray, index, element;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, users.listSessions(userId)];
                 case 1:
                     userSessions = _a.sent();
-                    session = userSessions.sessions.find(function (session) { return session.$id === sessionId; });
-                    if (session) {
-                        return [2 /*return*/, true];
+                    sessionArray = userSessions.sessions;
+                    for (index = 0; index < sessionArray.length; index++) {
+                        element = sessionArray[index];
+                        if (element.$id === sessionId) {
+                            return [2 /*return*/, true];
+                        }
                     }
                     return [2 /*return*/, false];
             }

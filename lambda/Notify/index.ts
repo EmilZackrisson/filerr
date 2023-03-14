@@ -13,7 +13,7 @@ client
 	.setKey(process.env.APPWRITE_KEY!); // Your secret API key
 
 // Handler
-exports.handler = async function (event: any, context: any, callback: any) {
+exports.handler = async function (event: any, context: any) {
 	console.log('## ENVIRONMENT VARIABLES: ' + serialize(process.env));
 	console.log('## CONTEXT: ' + serialize(context));
 	console.log('## EVENT: ' + serialize(event));
@@ -23,7 +23,8 @@ exports.handler = async function (event: any, context: any, callback: any) {
 		if (checkSession(body.userId, body.sessionId)) {
 			if (body.eventType === 'newRequest') {
 				console.log('New request event received');
-				callback(formatResponse(await notifyNew(body)));
+				await notifyNew(body);
+				return formatResponse('Success');
 			} else if (body.eventType === 'completedRequest') {
 				console.log('Completed request event received');
 				const completedRequestBody: body = body;
@@ -35,21 +36,19 @@ exports.handler = async function (event: any, context: any, callback: any) {
 				);
 				await sendUserEmail(user.email, document).then(() => {
 					console.log('Email sent');
-					callback(formatResponse({ statusCode: 200, body: 'Success' }));
+					return formatResponse('Success');
 				});
 			} else {
 				console.log('Unknown event type received');
-				callback(
-					formatError({ statusCode: 400, code: 'Bad Request', message: 'Unknown event type' })
-				);
+				return formatError({ statusCode: 400, code: 'Bad Request', message: 'Unknown event type' });
 			}
 		} else {
 			console.log('Invalid session from user: ', body.requestData.user);
-			callback(formatError({ statusCode: 401, code: 'Unauthorized', message: 'Invalid session' }));
+			return formatError({ statusCode: 401, code: 'Unauthorized', message: 'Invalid session' });
 		}
 	} catch (error) {
 		console.error('Error while handling event: ', error);
-		callback(formatError({ statusCode: 500, code: 'Internal Server Error', message: error }));
+		return formatError({ statusCode: 500, code: 'Internal Server Error', message: error });
 	}
 };
 
@@ -149,7 +148,7 @@ async function sendDiscord(user: string, filename: string, text?: string, type?:
 		});
 	} catch (error) {
 		console.error('Error while sending new request to Discord: ', error);
-		return formatError(error);
+		return;
 	}
 }
 

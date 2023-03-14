@@ -48,61 +48,56 @@ client
     .setProject(process.env.APPWRITE_PROJECT) // Your project ID
     .setKey(process.env.APPWRITE_KEY); // Your secret API key
 // Handler
-exports.handler = function (event, context, callback) {
+exports.handler = function (event, context) {
     return __awaiter(this, void 0, void 0, function () {
-        var body, _a, _b, completedRequestBody, user, document_1, error_1;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
+        var body, completedRequestBody, user, document_1, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
                 case 0:
                     console.log('## ENVIRONMENT VARIABLES: ' + serialize(process.env));
                     console.log('## CONTEXT: ' + serialize(context));
                     console.log('## EVENT: ' + serialize(event));
                     console.log(event);
-                    _c.label = 1;
+                    _a.label = 1;
                 case 1:
-                    _c.trys.push([1, 11, , 12]);
+                    _a.trys.push([1, 11, , 12]);
                     body = event;
                     if (!checkSession(body.userId, body.sessionId)) return [3 /*break*/, 9];
                     if (!(body.eventType === 'newRequest')) return [3 /*break*/, 3];
                     console.log('New request event received');
-                    _a = callback;
-                    _b = formatResponse;
                     return [4 /*yield*/, notifyNew(body)];
                 case 2:
-                    _a.apply(void 0, [_b.apply(void 0, [_c.sent()])]);
-                    return [3 /*break*/, 8];
+                    _a.sent();
+                    return [2 /*return*/, formatResponse('Success')];
                 case 3:
                     if (!(body.eventType === 'completedRequest')) return [3 /*break*/, 7];
                     console.log('Completed request event received');
                     completedRequestBody = body;
                     return [4 /*yield*/, getUser(completedRequestBody.userId)];
                 case 4:
-                    user = _c.sent();
+                    user = _a.sent();
                     return [4 /*yield*/, getDocument(completedRequestBody.documentId, completedRequestBody.databaseId, completedRequestBody.collectionId)];
                 case 5:
-                    document_1 = _c.sent();
+                    document_1 = _a.sent();
                     return [4 /*yield*/, sendUserEmail(user.email, document_1).then(function () {
                             console.log('Email sent');
-                            callback(formatResponse({ statusCode: 200, body: 'Success' }));
+                            return formatResponse('Success');
                         })];
                 case 6:
-                    _c.sent();
+                    _a.sent();
                     return [3 /*break*/, 8];
                 case 7:
                     console.log('Unknown event type received');
-                    callback(formatError({ statusCode: 400, code: 'Bad Request', message: 'Unknown event type' }));
-                    _c.label = 8;
+                    return [2 /*return*/, formatError({ statusCode: 400, code: 'Bad Request', message: 'Unknown event type' })];
                 case 8: return [3 /*break*/, 10];
                 case 9:
                     console.log('Invalid session from user: ', body.requestData.user);
-                    callback(formatError({ statusCode: 401, code: 'Unauthorized', message: 'Invalid session' }));
-                    _c.label = 10;
+                    return [2 /*return*/, formatError({ statusCode: 401, code: 'Unauthorized', message: 'Invalid session' })];
                 case 10: return [3 /*break*/, 12];
                 case 11:
-                    error_1 = _c.sent();
+                    error_1 = _a.sent();
                     console.error('Error while handling event: ', error_1);
-                    callback(formatError({ statusCode: 500, code: 'Internal Server Error', message: error_1 }));
-                    return [3 /*break*/, 12];
+                    return [2 /*return*/, formatError({ statusCode: 500, code: 'Internal Server Error', message: error_1 })];
                 case 12: return [2 /*return*/];
             }
         });
@@ -215,7 +210,7 @@ function sendDiscord(user, filename, text, type) {
                 case 3:
                     error_2 = _a.sent();
                     console.error('Error while sending new request to Discord: ', error_2);
-                    return [2 /*return*/, formatError(error_2)];
+                    return [2 /*return*/];
                 case 4: return [2 /*return*/];
             }
         });

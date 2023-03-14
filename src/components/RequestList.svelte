@@ -60,6 +60,7 @@
 				if (response.events[0].includes('.delete')) {
 					const payload: requestDocument = response.payload as requestDocument;
 					requests = requests.filter((r) => r.id !== payload.$id);
+					window.location.reload();
 					uniqueKey = {};
 				}
 			});

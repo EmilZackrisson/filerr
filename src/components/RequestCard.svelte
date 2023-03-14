@@ -7,6 +7,7 @@
 		PUBLIC_APPWRITE_COLLECTION_ID,
 		PUBLIC_APPWRITE_DATABASE_ID
 	} from '$env/static/public';
+	import Loader from './Loader.svelte';
 
 	type requestDocument = Models.Document & {
 		user: string;
@@ -28,9 +29,6 @@
 
 	const account = new Account(client);
 
-	let updateMode: boolean = false;
-	let completeReqMode: boolean = false;
-
 	const options: Intl.DateTimeFormatOptions = {
 		weekday: 'long',
 		year: 'numeric',
@@ -41,6 +39,7 @@
 	};
 
 	let isAdmin = false;
+	let loading = false;
 
 	if (teamMembership.teams.findIndex((team) => team.$id === PUBLIC_APPWRITE_TEAM_ADMIN_ID) !== -1) {
 		isAdmin = true;
@@ -52,13 +51,15 @@
 		const formData = new FormData(form);
 		const fileLocation = formData.get('fileLocation') as string;
 		console.log(fileLocation);
+		loading = true;
 		await databases
-			.updateDocument(PUBLIC_APPWRITE_DATABASE_ID, PUBLIC_APPWRITE_COLLECTION_ID, request.id, {
+			.updateDocument(PUBLIC_APPWRITE_DATABASE_ID, PUBLIC_APPWRITE_COLLECTION_ID, request.$id, {
 				completed: true,
 				completedAt: new Date().toISOString(),
 				completedBy: accountData.name,
 				type: request.type,
-				completedMessage: fileLocation
+				completedMessage: fileLocation,
+				status: 'Tillgänglig'
 			})
 			.then(async (document) => {
 				await sendUserEmail(document.$id, document.$databaseId, document.$collectionId);
@@ -67,14 +68,16 @@
 			.catch((error) => {
 				toast.error(error.message);
 			});
+		loading = false;
 	}
 
 	async function updateRequest(event: Event) {
 		const form = event.target as HTMLFormElement;
 		const formData = new FormData(form);
+		loading = true;
 
 		await databases
-			.updateDocument(PUBLIC_APPWRITE_DATABASE_ID, PUBLIC_APPWRITE_COLLECTION_ID, request.id, {
+			.updateDocument(PUBLIC_APPWRITE_DATABASE_ID, PUBLIC_APPWRITE_COLLECTION_ID, request.$id, {
 				name: formData.get('fileName') as string,
 				text: formData.get('text') as string
 			})
@@ -84,22 +87,26 @@
 			.catch((error) => {
 				toast.error(error.message);
 			});
+		loading = false;
 	}
 
 	async function deleteRequest() {
+		loading = true;
 		await databases
-			.deleteDocument(PUBLIC_APPWRITE_DATABASE_ID, PUBLIC_APPWRITE_COLLECTION_ID, request.id)
+			.deleteDocument(PUBLIC_APPWRITE_DATABASE_ID, PUBLIC_APPWRITE_COLLECTION_ID, request.$id)
 			.then(() => {
 				toast.success('Raderade förfrågan!');
 			})
 			.catch((error) => {
 				toast.error(error.message);
 			});
+		loading = false;
 	}
 
 	async function begunRequest() {
+		loading = true;
 		await databases
-			.updateDocument(PUBLIC_APPWRITE_DATABASE_ID, PUBLIC_APPWRITE_COLLECTION_ID, request.id, {
+			.updateDocument(PUBLIC_APPWRITE_DATABASE_ID, PUBLIC_APPWRITE_COLLECTION_ID, request.$id, {
 				status: 'Påbörjad'
 			})
 			.then(() => {
@@ -108,6 +115,7 @@
 			.catch((error) => {
 				toast.error(error.message);
 			});
+		loading = false;
 	}
 
 	function toggleCompletePopup() {
@@ -165,8 +173,8 @@
 		<p>Uppdaterades den: {new Date(request.$updatedAt).toLocaleString('sv-SE', options)}</p>
 	{/if}
 	{#if request.completed}
-		<p>Completed at: {request.completedAt?.toLocaleString('sv-SE', options)}</p>
-		<p>Completed by: {request.completedBy}</p>
+		<p>Markerades som klar den: {new Date(request.completedAt).toLocaleString('sv-SE', options)}</p>
+		<p>Markerades som klar av: {request.completedBy}</p>
 	{/if}
 	<div class="mt-2">
 		{#if !request.completed}
@@ -246,6 +254,10 @@
 		</div>
 	</div>
 </div>
+
+{#if loading}
+	<Loader message="" />
+{/if}
 
 <style>
 	.popup {

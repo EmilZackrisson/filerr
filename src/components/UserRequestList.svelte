@@ -18,21 +18,19 @@
 
 	let uniqueKey = {};
 
-	interface FileRequest {
-		fileName: string;
-		text?: string;
-		completed?: boolean;
-		completedAt?: Date;
-		completedBy?: string;
+	type requestDocument = Models.Document & {
 		user: string;
-		id: string;
-		createdAt: Date;
-		updatedAt: Date;
-		permissions: Permission;
-		type?: string | 'Annat';
-	}
+		name: string;
+		text: string;
+		type: string;
+		completed: boolean;
+		completedAt: Date;
+		completedBy: string;
+		completedMessage: string;
+		status: string;
+	};
 
-	let requests: FileRequest[] = [];
+	let requests: requestDocument[] = [];
 	async function load() {
 		try {
 			let documents = await databases.listDocuments(
@@ -49,65 +47,30 @@
 				if (response.payload.user !== username) return;
 
 				if (response.events[0].includes('.create')) {
-					const payload: Models.Document = response.payload as Models.Document;
-					const request: FileRequest = {
-						id: payload.$id,
-						fileName: payload.name,
-						text: payload.text,
-						completed: payload.completed,
-						createdAt: new Date(payload.$createdAt),
-						updatedAt: new Date(payload.$updatedAt),
-						user: payload.user,
-						permissions: payload.$permissions,
-						completedAt: new Date(payload.completedAt),
-						completedBy: payload.completedBy,
-						type: payload.type
-					};
-					requests.push(request);
+					const payload: requestDocument = response.payload as requestDocument;
+					requests.push(payload);
 					uniqueKey = {};
 				}
 				if (response.events[0].includes('.update')) {
-					const payload: Models.Document = response.payload as Models.Document;
-					const request: FileRequest = {
-						id: payload.$id,
-						fileName: payload.name,
-						text: payload.text,
-						completed: payload.completed,
-						createdAt: new Date(payload.$createdAt),
-						updatedAt: new Date(payload.$updatedAt),
-						user: payload.user,
-						permissions: payload.$permissions
-					};
+					const payload: requestDocument = response.payload as requestDocument;
 					requests = requests.map((r) => {
-						if (r.id === request.id) {
-							return request;
+						if (r.id === payload.id) {
+							return payload;
 						}
 						return r;
 					});
 					uniqueKey = {};
 				}
 				if (response.events[0].includes('.delete')) {
-					const payload: Models.Document = response.payload as Models.Document;
+					const payload: requestDocument = response.payload as requestDocument;
 					requests = requests.filter((r) => r.id !== payload.$id);
+					window.location.reload();
 					uniqueKey = {};
 				}
 			});
 
 			documents.documents.forEach((document) => {
-				const request: FileRequest = {
-					id: document.$id,
-					fileName: document.name,
-					text: document.text,
-					completed: document.completed,
-					completedAt: new Date(document.completedAt),
-					completedBy: document.completedBy,
-					createdAt: new Date(document.$createdAt),
-					updatedAt: new Date(document.$updatedAt),
-					user: document.user,
-					permissions: document.$permissions,
-					type: document.type
-				};
-				requests.push(request);
+				requests.push(document as requestDocument);
 			});
 			await getTeam();
 			loadedRequests = true;

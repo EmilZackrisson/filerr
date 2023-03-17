@@ -25,7 +25,7 @@ export async function load({ url }: { url: URL }) {
 	const filterdRequestedUser = filterUserData(
 		requestedUser as sdk.Models.User<sdk.Models.Preferences>
 	);
-	const usersRequests = await getUsersRequests(requestedUserId!);
+	const usersRequests = await getUsersRequests(filterdRequestedUser.name);
 	return { user: filterdRequestedUser, requests: usersRequests };
 
 	// throw error(404, 'Not found');
@@ -41,7 +41,6 @@ async function checkUserSession(user: string, sessionId: string) {
 		const users = new sdk.Users(client);
 		const result = await users.listSessions(user);
 		const session = result.sessions.find((session) => session.$id === sessionId);
-		// console.log(session);
 		if (session !== undefined) return true;
 		return false;
 	} catch (error) {
@@ -65,14 +64,14 @@ async function getRequestedUser(userId: string) {
 		return result;
 	} catch (error) {
 		if (error instanceof AppwriteException) {
-			// console.log(error.message);
+			console.log(error.message);
 			if ((error.code = 404)) return '404, User not found';
 			return false;
 		}
 	}
 }
 
-async function getUsersRequests(userId: string) {
+async function getUsersRequests(name: string) {
 	try {
 		const client = new sdk.Client();
 		client
@@ -85,7 +84,7 @@ async function getUsersRequests(userId: string) {
 			env.PUBLIC_APPWRITE_COLLECTION_ID
 		);
 		// @ts-expect-error
-		let filterdResult = result.documents.filter((document) => (document.user = userId));
+		let filterdResult = result.documents.filter((document) => document.user === name);
 		return filterdResult;
 	} catch (error) {
 		if (error instanceof AppwriteException) {

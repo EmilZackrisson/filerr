@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { env } from '$env/dynamic/public';
 	import { Teams, type Models } from 'appwrite';
-	import { Databases, Query, Client } from 'appwrite';
+	import { Databases, Client } from 'appwrite';
 	import { onMount } from 'svelte';
 	import Loader from './Loader.svelte';
 	import RequestCard from './RequestCard.svelte';
@@ -9,7 +9,7 @@
 
 	export let client: Client;
 	export let accountData: Models.Account<Models.Preferences>;
-	export let userId: string;
+	export let username: string;
 
 	let teams = new Teams(client);
 	const databases = new Databases(client);
@@ -35,17 +35,15 @@
 		try {
 			let documents = await databases.listDocuments(
 				env.PUBLIC_APPWRITE_DATABASE_ID,
-				env.PUBLIC_APPWRITE_COLLECTION_ID,
-				[Query.equal('user', accountData.name)]
+				env.PUBLIC_APPWRITE_COLLECTION_ID
 			);
-			console.log(documents.documents);
 
 			// Testar
 			const subscriptionChannel = 'collections.' + env.PUBLIC_APPWRITE_COLLECTION_ID + '.documents';
 			client.subscribe([subscriptionChannel, 'documents'], (response) => {
 				// Callback will be executed on changes for documents A and all files.
 				// @ts-expect-error
-				if (response.payload.user !== userId) return;
+				if (response.payload.user !== username) return;
 
 				if (response.events[0].includes('.create')) {
 					const payload: requestDocument = response.payload as requestDocument;
@@ -71,7 +69,9 @@
 			});
 
 			documents.documents.forEach((document) => {
-				requests.push(document as requestDocument);
+				if (document.user === username) {
+					requests.push(document as requestDocument);
+				}
 			});
 			await getTeam();
 			loadedRequests = true;

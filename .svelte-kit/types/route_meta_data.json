@@ -1,5 +1,8 @@
 {
 	"/": [],
+	"/admin/dashboard": [
+		"src/routes/admin/dashboard/+page.server.ts"
+	],
 	"/user": [
 		"src/routes/user/+page.server.ts"
 	]

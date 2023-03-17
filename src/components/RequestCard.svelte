@@ -56,7 +56,6 @@
 		const form = e.target as HTMLFormElement;
 		const formData = new FormData(form);
 		const fileLocation = formData.get('fileLocation') as string;
-		console.log(fileLocation);
 		loading = true;
 		await databases
 			.updateDocument(
@@ -194,7 +193,7 @@
 		<p>{request.text}</p>
 		<p>
 			Förfrågad av: <a
-				href={`${env.PUBLIC_URL}/user?name=${request.user}&userId=${accountData.$id}&sessionId=${session.$id}`}
+				href={`/user?name=${request.user}&userId=${accountData.$id}&sessionId=${session.$id}`}
 				class="text-accent">{request.user}</a
 			>
 		</p>

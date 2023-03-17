@@ -1,14 +1,21 @@
 <script lang="ts">
 	import { env } from '$env/dynamic/public';
-	import type { Models, Account } from 'appwrite';
+	import { type Models, type Account, Teams, Client } from 'appwrite';
 	import { onMount } from 'svelte';
 
 	export let accountData: Models.Account<Models.Preferences>;
 	export let account: Account;
 
+	const client = new Client()
+		.setEndpoint(env.PUBLIC_APPWRITE_ENDPOINT)
+		.setProject(env.PUBLIC_APPWRITE_PROJECT);
+	const teams = new Teams(client);
+
 	let session: Models.Session;
 	let userUrl: string;
+	let dashUrl: string;
 	let loading = true;
+	let admin = false;
 
 	function logout() {
 		account.deleteSession('current').then(() => {
@@ -19,6 +26,15 @@
 	onMount(async () => {
 		session = await account.getSession('current');
 		userUrl = `${env.PUBLIC_URL}/user?searchId=${accountData.$id}&userId=${accountData.$id}&sessionId=${session.$id}`;
+		dashUrl = `/admin/dashboard?userId=${accountData.$id}&sessionId=${session.$id}`;
+
+		const teamsData = await teams.list();
+		teamsData.teams.forEach((team) => {
+			if (team.$id === 'admins') {
+				admin = true;
+				return;
+			}
+		});
 
 		loading = false;
 	});
@@ -58,6 +74,9 @@
 								{accountData.name.split(' ')[1].substring(0, 1)}</a
 							>
 						</li>
+					{/if}
+					{#if admin}
+						<li><a href={dashUrl}>Admin Dashboard</a></li>
 					{/if}
 					<!-- <li><a>About</a></li> -->
 				</ul>

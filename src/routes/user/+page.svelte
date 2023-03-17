@@ -1,4 +1,4 @@
-<!-- /user??searchId=6408935300ed2cef7dd1&userId=6408935300ed2cef7dd1&sessionId=641333cc781ed29c7bf6 -->
+<!-- /admin/dashboard?userId=6408935300ed2cef7dd1&sessionId=641333cc781ed29c7bf6 -->
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { Client, Account, Teams, type Models } from 'appwrite';
@@ -20,7 +20,6 @@
 
 	/** @type {import('./$types').PageData} */
 	export let data: Data;
-	console.log('🚀 ~ file: +page.svelte:26 ~ data:', data);
 
 	onMount(async () => {
 		accountData = await account.get();
@@ -78,7 +77,7 @@
 				<p>Antal förfrågningar: {data.requests.length}</p>
 			</section>
 
-			<UserRequestList {client} {accountData} userId={data.user.$id} />
+			<UserRequestList {client} {accountData} username={data.user.name} />
 		{:else}
 			<h1 class="text-3xl font-semibold">Du har inte behörighet att komma hit.</h1>
 		{/if}

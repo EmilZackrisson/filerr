@@ -1,24 +1,23 @@
 {
 	"compilerOptions": {
-		"baseUrl": "..",
 		"paths": {
 			"lib": [
-				"src/lib"
+				"../src/lib"
 			],
 			"lib/*": [
-				"src/lib/*"
+				"../src/lib/*"
 			],
 			"static": [
-				"src/static"
+				"../src/static"
 			],
 			"static/*": [
-				"src/static/*"
+				"../src/static/*"
 			],
 			"$lib": [
-				"src/lib"
+				"../src/lib"
 			],
 			"$lib/*": [
-				"src/lib/*"
+				"../src/lib/*"
 			]
 		},
 		"rootDirs": [

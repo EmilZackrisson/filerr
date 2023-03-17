@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { PUBLIC_APPWRITE_DATABASE_ID, PUBLIC_APPWRITE_COLLECTION_ID } from '$env/static/public';
-	import { Permission, Teams, type Models } from 'appwrite';
-	import { Databases, Query, Account, Client } from 'appwrite';
+	import { Teams, type Models } from 'appwrite';
+	import { Databases, Client } from 'appwrite';
 	import { onMount } from 'svelte';
 	import Loader from './Loader.svelte';
 	import RequestCard from './RequestCard.svelte';

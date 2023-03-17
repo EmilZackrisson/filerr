@@ -18,6 +18,7 @@
 
 	const account = new Account(client);
 	let accountData: Models.Account<Models.Preferences>;
+	let session: Models.Session;
 	let loggedIn = false;
 	let loading = true;
 

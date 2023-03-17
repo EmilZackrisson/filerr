@@ -1,13 +1,15 @@
 <script lang="ts">
-	import type { Models, Databases, Permission, Client } from 'appwrite';
+	import type { Models, Databases, Client } from 'appwrite';
 	import { Account } from 'appwrite';
 	import toast, { Toaster } from 'svelte-french-toast';
 	import {
 		PUBLIC_APPWRITE_TEAM_ADMIN_ID,
 		PUBLIC_APPWRITE_COLLECTION_ID,
-		PUBLIC_APPWRITE_DATABASE_ID
+		PUBLIC_APPWRITE_DATABASE_ID,
+		PUBLIC_URL
 	} from '$env/static/public';
 	import Loader from './Loader.svelte';
+	import { onMount } from 'svelte';
 
 	type requestDocument = Models.Document & {
 		user: string;
@@ -28,6 +30,13 @@
 	export let client: Client;
 
 	const account = new Account(client);
+	let session: Models.Session;
+
+	onMount(async () => {
+		session = await account.getSession('current');
+
+		loading = false;
+	});
 
 	const options: Intl.DateTimeFormatOptions = {
 		weekday: 'long',
@@ -39,7 +48,7 @@
 	};
 
 	let isAdmin = false;
-	let loading = false;
+	let loading = true;
 
 	if (teamMembership.teams.findIndex((team) => team.$id === PUBLIC_APPWRITE_TEAM_ADMIN_ID) !== -1) {
 		isAdmin = true;
@@ -160,41 +169,54 @@
 	}
 </script>
 
-<section class="bg-base-200 container rounded-lg p-4" id="card">
-	<Toaster />
-	<h3 class="text-2xl font-semibold">{request.name}</h3>
-	<p>{request.text}</p>
-	<p>Förfrågad av: {request.user}</p>
-	<p>Förfrågades den: {new Date(request.$createdAt).toLocaleString('sv-SE', options)}</p>
-
-	<p>Typ: {request.type}</p>
-	<p>Status: {request.status}</p>
-	{#if request.$updatedAt !== request.$createdAt}
-		<p>Uppdaterades den: {new Date(request.$updatedAt).toLocaleString('sv-SE', options)}</p>
-	{/if}
-	{#if request.completed}
-		<p>Markerades som klar den: {new Date(request.completedAt).toLocaleString('sv-SE', options)}</p>
-		<p>Markerades som klar av: {request.completedBy}</p>
-	{/if}
-	<div class="mt-2">
-		{#if !request.completed}
-			<button class="btn btn-secondary" on:click={toggleUpdatePopup}>Uppdatera</button>
-		{/if}
-
-		{#if isAdmin && !request.completed}
-			<button class="btn btn-success" id="completeReqBtn" on:click={toggleCompletePopup}
-				>Markera som klar</button
+{#if loading}
+	<Loader message={'Laddar'} />
+{:else}
+	<section class="bg-base-200 container rounded-lg p-4" id="card">
+		<Toaster />
+		<h3 class="text-2xl font-semibold">{request.name}</h3>
+		<p>{request.text}</p>
+		<p>
+			Förfrågad av: <a
+				href={`${PUBLIC_URL}user?name=${request.user}&userId=${accountData.$id}&sessionId=${session.$id}`}
+				class="text-accent">{request.user}</a
 			>
-			<button class="btn btn-warning" on:click={() => begunRequest()}>Markera som påbörjad</button>
-		{/if}
+		</p>
 
-		{#if allowDeletion || isAdmin}
-			<button class="btn bg-error text-black border-transparent" on:click={toggleDeletePopup}
-				>Ta bort</button
-			>
+		<p>Förfrågades den: {new Date(request.$createdAt).toLocaleString('sv-SE', options)}</p>
+
+		<p>Typ: {request.type}</p>
+		<p>Status: {request.status}</p>
+		{#if request.$updatedAt !== request.$createdAt}
+			<p>Uppdaterades den: {new Date(request.$updatedAt).toLocaleString('sv-SE', options)}</p>
 		{/if}
-	</div>
-</section>
+		{#if request.completed}
+			<p>
+				Markerades som klar den: {new Date(request.completedAt).toLocaleString('sv-SE', options)}
+			</p>
+			<p>Markerades som klar av: {request.completedBy}</p>
+		{/if}
+		<div class="mt-2">
+			{#if !request.completed}
+				<button class="btn btn-secondary" on:click={toggleUpdatePopup}>Uppdatera</button>
+			{/if}
+
+			{#if isAdmin && !request.completed}
+				<button class="btn btn-success" id="completeReqBtn" on:click={toggleCompletePopup}
+					>Markera som klar</button
+				>
+				<button class="btn btn-warning" on:click={() => begunRequest()}>Markera som påbörjad</button
+				>
+			{/if}
+
+			{#if allowDeletion || isAdmin}
+				<button class="btn bg-error text-black border-transparent" on:click={toggleDeletePopup}
+					>Ta bort</button
+				>
+			{/if}
+		</div>
+	</section>
+{/if}
 
 <div class="markCompletePopup hidden popup" id="markCompletePopup">
 	<div class="popup-inner bg-slate-800 flex flex-col gap-3">

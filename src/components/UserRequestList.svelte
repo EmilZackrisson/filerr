@@ -9,7 +9,7 @@
 
 	export let client: Client;
 	export let accountData: Models.Account<Models.Preferences>;
-	export let username: string;
+	export let userId: string;
 
 	let teams = new Teams(client);
 	const databases = new Databases(client);
@@ -38,13 +38,14 @@
 				PUBLIC_APPWRITE_COLLECTION_ID,
 				[Query.equal('user', accountData.name)]
 			);
+			console.log(documents.documents);
 
 			// Testar
 			const subscriptionChannel = 'collections.' + PUBLIC_APPWRITE_COLLECTION_ID + '.documents';
 			client.subscribe([subscriptionChannel, 'documents'], (response) => {
 				// Callback will be executed on changes for documents A and all files.
 				// @ts-expect-error
-				if (response.payload.user !== username) return;
+				if (response.payload.user !== userId) return;
 
 				if (response.events[0].includes('.create')) {
 					const payload: requestDocument = response.payload as requestDocument;

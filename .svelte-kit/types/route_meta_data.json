@@ -1,4 +1,7 @@
 {
 	"/": [],
-	"/profile": []
+	"/profile": [],
+	"/user": [
+		"src/routes/user/+page.server.ts"
+	]
 }

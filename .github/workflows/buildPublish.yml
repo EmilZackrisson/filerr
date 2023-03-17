@@ -75,6 +75,7 @@ jobs:
             "PUBLIC_APPWRITE_DATABASE_ID=${{ secrets.PUBLIC_APPWRITE_DATABASE_ID}}"
             "PUBLIC_APPWRITE_COLLECTION_ID=${{ secrets.PUBLIC_APPWRITE_COLLECTION_ID }}"
             "PUBLIC_APPWRITE_TEAM_ADMIN_ID=${{ secrets.PUBLIC_APPWRITE_TEAM_ADMIN_ID }}"
+            "PRIVATE_APPWRITE_API_KEY=${{ secrets.PRIVATE_APPWRITE_API_KEY }}"
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}

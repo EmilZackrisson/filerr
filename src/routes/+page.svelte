@@ -1,24 +1,19 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Client, Account, ID, AppwriteException } from 'appwrite';
+	import { Client, Account, AppwriteException } from 'appwrite';
 	import type { Models } from 'appwrite';
-	import {
-		PUBLIC_APPWRITE_PROJECT,
-		PUBLIC_APPWRITE_ENDPOINT,
-		PUBLIC_URL
-	} from '$env/static/public';
+	import { env } from '$env/dynamic/public';
 	import Navbar from '../components/Navbar.svelte';
 	import RequestList from '../components/RequestList.svelte';
 	import Loader from '../components/Loader.svelte';
 	import CreateRequest from '../components/CreateRequest.svelte';
 
 	const client = new Client()
-		.setEndpoint(PUBLIC_APPWRITE_ENDPOINT) // Your API Endpoint
-		.setProject(PUBLIC_APPWRITE_PROJECT); // Your project ID
+		.setEndpoint(env.PUBLIC_APPWRITE_ENDPOINT) // Your API Endpoint
+		.setProject(env.PUBLIC_APPWRITE_PROJECT); // Your project ID
 
 	const account = new Account(client);
 	let accountData: Models.Account<Models.Preferences>;
-	let session: Models.Session;
 	let loggedIn = false;
 	let loading = true;
 
@@ -38,7 +33,7 @@
 	});
 
 	function login() {
-		account.createOAuth2Session('authentik', PUBLIC_URL, PUBLIC_URL);
+		account.createOAuth2Session('authentik', env.PUBLIC_URL, env.PUBLIC_URL);
 	}
 </script>
 

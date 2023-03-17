@@ -1,12 +1,7 @@
 // @ts-nocheck
 import sdk, { AppwriteException } from 'node-appwrite';
-import { PRIVATE_APPWRITE_API_KEY } from '$env/static/private';
-import {
-	PUBLIC_APPWRITE_ENDPOINT,
-	PUBLIC_APPWRITE_PROJECT,
-	PUBLIC_APPWRITE_DATABASE_ID,
-	PUBLIC_APPWRITE_COLLECTION_ID
-} from '$env/static/public';
+import { env } from '$env/dynamic/public';
+import { env as envPrivate } from '$env/dynamic/private';
 
 /** @param {Parameters<import('./$types').PageServerLoad>[0]} event */
 export async function load({ url }: { url: URL }) {
@@ -40,9 +35,9 @@ async function checkUserSession(user: string, sessionId: string) {
 	try {
 		const client = new sdk.Client();
 		client
-			.setEndpoint(PUBLIC_APPWRITE_ENDPOINT)
-			.setProject(PUBLIC_APPWRITE_PROJECT)
-			.setKey(PRIVATE_APPWRITE_API_KEY);
+			.setEndpoint(env.PUBLIC_APPWRITE_ENDPOINT)
+			.setProject(env.PUBLIC_APPWRITE_PROJECT)
+			.setKey(envPrivate.PRIVATE_APPWRITE_API_KEY);
 		const users = new sdk.Users(client);
 		const result = await users.listSessions(user);
 		const session = result.sessions.find((session) => session.$id === sessionId);
@@ -62,9 +57,9 @@ async function getRequestedUser(userId: string) {
 	try {
 		const client = new sdk.Client();
 		client
-			.setEndpoint(PUBLIC_APPWRITE_ENDPOINT)
-			.setProject(PUBLIC_APPWRITE_PROJECT)
-			.setKey(PRIVATE_APPWRITE_API_KEY);
+			.setEndpoint(env.PUBLIC_APPWRITE_ENDPOINT)
+			.setProject(env.PUBLIC_APPWRITE_PROJECT)
+			.setKey(envPrivate.PRIVATE_APPWRITE_API_KEY);
 		const users = new sdk.Users(client);
 		const result = await users.get(userId);
 		return result;
@@ -81,13 +76,13 @@ async function getUsersRequests(userId: string) {
 	try {
 		const client = new sdk.Client();
 		client
-			.setEndpoint(PUBLIC_APPWRITE_ENDPOINT)
-			.setProject(PUBLIC_APPWRITE_PROJECT)
-			.setKey(PRIVATE_APPWRITE_API_KEY);
+			.setEndpoint(env.PUBLIC_APPWRITE_ENDPOINT)
+			.setProject(env.PUBLIC_APPWRITE_PROJECT)
+			.setKey(envPrivate.PRIVATE_APPWRITE_API_KEY);
 		const database = new sdk.Databases(client);
 		const result = await database.listDocuments(
-			PUBLIC_APPWRITE_DATABASE_ID,
-			PUBLIC_APPWRITE_COLLECTION_ID
+			env.PUBLIC_APPWRITE_DATABASE_ID,
+			env.PUBLIC_APPWRITE_COLLECTION_ID
 		);
 		// @ts-expect-error
 		let filterdResult = result.documents.filter((document) => (document.user = userId));
@@ -116,9 +111,9 @@ async function getUserByName(name: string) {
 	try {
 		const client = new sdk.Client();
 		client
-			.setEndpoint(PUBLIC_APPWRITE_ENDPOINT)
-			.setProject(PUBLIC_APPWRITE_PROJECT)
-			.setKey(PRIVATE_APPWRITE_API_KEY);
+			.setEndpoint(env.PUBLIC_APPWRITE_ENDPOINT)
+			.setProject(env.PUBLIC_APPWRITE_PROJECT)
+			.setKey(envPrivate.PRIVATE_APPWRITE_API_KEY);
 		const users = new sdk.Users(client);
 		const result = await users.list();
 		const user = result.users.find((user) => user.name === name);

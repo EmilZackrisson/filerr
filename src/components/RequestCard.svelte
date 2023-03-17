@@ -2,12 +2,7 @@
 	import type { Models, Databases, Client } from 'appwrite';
 	import { Account } from 'appwrite';
 	import toast, { Toaster } from 'svelte-french-toast';
-	import {
-		PUBLIC_APPWRITE_TEAM_ADMIN_ID,
-		PUBLIC_APPWRITE_COLLECTION_ID,
-		PUBLIC_APPWRITE_DATABASE_ID,
-		PUBLIC_URL
-	} from '$env/static/public';
+	import { env } from '$env/dynamic/public';
 	import Loader from './Loader.svelte';
 	import { onMount } from 'svelte';
 
@@ -50,7 +45,9 @@
 	let isAdmin = false;
 	let loading = true;
 
-	if (teamMembership.teams.findIndex((team) => team.$id === PUBLIC_APPWRITE_TEAM_ADMIN_ID) !== -1) {
+	if (
+		teamMembership.teams.findIndex((team) => team.$id === env.PUBLIC_APPWRITE_TEAM_ADMIN_ID) !== -1
+	) {
 		isAdmin = true;
 	}
 
@@ -62,14 +59,19 @@
 		console.log(fileLocation);
 		loading = true;
 		await databases
-			.updateDocument(PUBLIC_APPWRITE_DATABASE_ID, PUBLIC_APPWRITE_COLLECTION_ID, request.$id, {
-				completed: true,
-				completedAt: new Date().toISOString(),
-				completedBy: accountData.name,
-				type: request.type,
-				completedMessage: fileLocation,
-				status: 'Tillgänglig'
-			})
+			.updateDocument(
+				env.PUBLIC_APPWRITE_DATABASE_ID,
+				env.PUBLIC_APPWRITE_COLLECTION_ID,
+				request.$id,
+				{
+					completed: true,
+					completedAt: new Date().toISOString(),
+					completedBy: accountData.name,
+					type: request.type,
+					completedMessage: fileLocation,
+					status: 'Tillgänglig'
+				}
+			)
 			.then(async (document) => {
 				await sendUserEmail(document.$id, document.$databaseId, document.$collectionId);
 				toast.success('Markerade förfrågan som klar!');
@@ -86,10 +88,15 @@
 		loading = true;
 
 		await databases
-			.updateDocument(PUBLIC_APPWRITE_DATABASE_ID, PUBLIC_APPWRITE_COLLECTION_ID, request.$id, {
-				name: formData.get('fileName') as string,
-				text: formData.get('text') as string
-			})
+			.updateDocument(
+				env.PUBLIC_APPWRITE_DATABASE_ID,
+				env.PUBLIC_APPWRITE_COLLECTION_ID,
+				request.$id,
+				{
+					name: formData.get('fileName') as string,
+					text: formData.get('text') as string
+				}
+			)
 			.then(() => {
 				toast.success('Uppdaterade förfrågan!');
 			})
@@ -102,7 +109,11 @@
 	async function deleteRequest() {
 		loading = true;
 		await databases
-			.deleteDocument(PUBLIC_APPWRITE_DATABASE_ID, PUBLIC_APPWRITE_COLLECTION_ID, request.$id)
+			.deleteDocument(
+				env.PUBLIC_APPWRITE_DATABASE_ID,
+				env.PUBLIC_APPWRITE_COLLECTION_ID,
+				request.$id
+			)
 			.then(() => {
 				toast.success('Raderade förfrågan!');
 			})
@@ -115,9 +126,14 @@
 	async function begunRequest() {
 		loading = true;
 		await databases
-			.updateDocument(PUBLIC_APPWRITE_DATABASE_ID, PUBLIC_APPWRITE_COLLECTION_ID, request.$id, {
-				status: 'Påbörjad'
-			})
+			.updateDocument(
+				env.PUBLIC_APPWRITE_DATABASE_ID,
+				env.PUBLIC_APPWRITE_COLLECTION_ID,
+				request.$id,
+				{
+					status: 'Påbörjad'
+				}
+			)
 			.then(() => {
 				toast.success('Markerade förfrågan som påbörjad!');
 			})
@@ -178,7 +194,7 @@
 		<p>{request.text}</p>
 		<p>
 			Förfrågad av: <a
-				href={`${PUBLIC_URL}/user?name=${request.user}&userId=${accountData.$id}&sessionId=${session.$id}`}
+				href={`${env.PUBLIC_URL}/user?name=${request.user}&userId=${accountData.$id}&sessionId=${session.$id}`}
 				class="text-accent">{request.user}</a
 			>
 		</p>

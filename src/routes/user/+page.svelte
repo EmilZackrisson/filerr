@@ -2,18 +2,14 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { Client, Account, Teams, type Models } from 'appwrite';
-	import {
-		PUBLIC_APPWRITE_PROJECT,
-		PUBLIC_APPWRITE_ENDPOINT,
-		PUBLIC_URL
-	} from '$env/static/public';
+	import { env } from '$env/dynamic/public';
 	import Navbar from '../../components/Navbar.svelte';
 	import Loader from '../../components/Loader.svelte';
 	import UserRequestList from '../../components/UserRequestList.svelte';
 
 	const client = new Client()
-		.setEndpoint(PUBLIC_APPWRITE_ENDPOINT) // Your API Endpoint
-		.setProject(PUBLIC_APPWRITE_PROJECT); // Your project ID
+		.setEndpoint(env.PUBLIC_APPWRITE_ENDPOINT) // Your API Endpoint
+		.setProject(env.PUBLIC_APPWRITE_PROJECT); // Your project ID
 
 	const account = new Account(client);
 	let accountData: Models.Account<Models.Preferences>;
@@ -21,7 +17,6 @@
 
 	let loggedIn = false;
 	let isAllowed = false;
-	let requestedUser: Models.Account<Models.Preferences>;
 
 	/** @type {import('./$types').PageData} */
 	export let data: Data;

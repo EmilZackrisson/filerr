@@ -2,11 +2,7 @@
 	import { Databases, ID, Role, Permission, Account } from 'appwrite';
 	import toast, { Toaster } from 'svelte-french-toast';
 	import type { Client, Models } from 'appwrite';
-	import {
-		PUBLIC_APPWRITE_TEAM_ADMIN_ID,
-		PUBLIC_APPWRITE_COLLECTION_ID,
-		PUBLIC_APPWRITE_DATABASE_ID
-	} from '$env/static/public';
+	import { env } from '$env/dynamic/public';
 
 	export let client: Client;
 	export let accountData: Models.Account<Models.Preferences>;
@@ -35,8 +31,8 @@
 			try {
 				await databases
 					.createDocument(
-						PUBLIC_APPWRITE_DATABASE_ID,
-						PUBLIC_APPWRITE_COLLECTION_ID,
+						env.PUBLIC_APPWRITE_DATABASE_ID,
+						env.PUBLIC_APPWRITE_COLLECTION_ID,
 						ID.unique(),
 						request,
 						[Permission.update(Role.user(accountData.$id))]

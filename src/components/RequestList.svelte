@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { PUBLIC_APPWRITE_DATABASE_ID, PUBLIC_APPWRITE_COLLECTION_ID } from '$env/static/public';
+	import { env } from '$env/dynamic/public';
 	import { Teams, type Models } from 'appwrite';
 	import { Databases, Client } from 'appwrite';
 	import { onMount } from 'svelte';
@@ -33,12 +33,12 @@
 	async function load() {
 		try {
 			let documents = await databases.listDocuments(
-				PUBLIC_APPWRITE_DATABASE_ID,
-				PUBLIC_APPWRITE_COLLECTION_ID
+				env.PUBLIC_APPWRITE_DATABASE_ID,
+				env.PUBLIC_APPWRITE_COLLECTION_ID
 			);
 
 			// Testar
-			const subscriptionChannel = 'collections.' + PUBLIC_APPWRITE_COLLECTION_ID + '.documents';
+			const subscriptionChannel = 'collections.' + env.PUBLIC_APPWRITE_COLLECTION_ID + '.documents';
 			client.subscribe([subscriptionChannel, 'documents'], (response) => {
 				// Callback will be executed on changes for documents A and all files.
 

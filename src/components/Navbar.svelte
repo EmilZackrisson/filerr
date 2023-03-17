@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { PUBLIC_URL } from '$env/static/public';
+	import { env } from '$env/dynamic/public';
 	import type { Models, Account } from 'appwrite';
 	import { onMount } from 'svelte';
 
@@ -18,7 +18,7 @@
 
 	onMount(async () => {
 		session = await account.getSession('current');
-		userUrl = `${PUBLIC_URL}/user?searchId=${accountData.$id}&userId=${accountData.$id}&sessionId=${session.$id}`;
+		userUrl = `${env.PUBLIC_URL}/user?searchId=${accountData.$id}&userId=${accountData.$id}&sessionId=${session.$id}`;
 
 		loading = false;
 	});

@@ -178,7 +178,7 @@
 		<p>{request.text}</p>
 		<p>
 			Förfrågad av: <a
-				href={`${PUBLIC_URL}user?name=${request.user}&userId=${accountData.$id}&sessionId=${session.$id}`}
+				href={`${PUBLIC_URL}/user?name=${request.user}&userId=${accountData.$id}&sessionId=${session.$id}`}
 				class="text-accent">{request.user}</a
 			>
 		</p>

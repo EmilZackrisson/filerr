@@ -18,7 +18,7 @@
 
 	onMount(async () => {
 		session = await account.getSession('current');
-		userUrl = `${PUBLIC_URL}user?searchId=${accountData.$id}&userId=${accountData.$id}&sessionId=${session.$id}`;
+		userUrl = `${PUBLIC_URL}/user?searchId=${accountData.$id}&userId=${accountData.$id}&sessionId=${session.$id}`;
 
 		loading = false;
 	});

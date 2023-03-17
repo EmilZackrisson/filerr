@@ -24,6 +24,7 @@ jobs:
           echo PUBLIC_APPWRITE_DATABASE_ID=${PUBLIC_APPWRITE_DATABASE_ID} > .env.production
           echo PUBLIC_APPWRITE_COLLECTION_ID=${PUBLIC_APPWRITE_COLLECTION_ID} > .env.production
           echo PUBLIC_APPWRITE_TEAM_ADMIN_ID=${PUBLIC_APPWRITE_TEAM_ADMIN_ID} > .env.production
+          echo PRIVATE_APPWRITE_API_KEY=${PRIVATE_APPWRITE_API_KEY} > .env.production
           cat .env.production
         env: 
           PUBLIC_URL: ${{ secrets.FILERR_PUBLIC_URL }}
@@ -32,6 +33,7 @@ jobs:
           PUBLIC_APPWRITE_DATABASE_ID: ${{ secrets.PUBLIC_APPWRITE_DATABASE_ID}}
           PUBLIC_APPWRITE_COLLECTION_ID: ${{ secrets.PUBLIC_APPWRITE_COLLECTION_ID }}
           PUBLIC_APPWRITE_TEAM_ADMIN_ID: ${{ secrets.PUBLIC_APPWRITE_TEAM_ADMIN_ID }}
+          PRIVATE_APPWRITE_API_KEY: ${{ secrets.PRIVATE_APPWRITE_API_KEY }}
 
 
   build-and-push-docker-image:

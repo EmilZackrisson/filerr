@@ -13,8 +13,8 @@ jobs:
   build-and-push-docker-image:
     name: Build Docker image and push to repositories
     # run only when code is compiling and tests are passing
-    # runs-on: ubuntu-latest
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    # runs-on: self-hosted
 
     # steps to perform in job
     steps:
@@ -47,5 +47,13 @@ jobs:
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
 
+      
+
+  deploy:
+    name: Deploy on unRaid
+    runs-on: self-hosted
+    needs: build-and-push-docker-image
+
+    steps:
       - name: Deploy on unRaid
         run: curl -X POST https://portainer.local.emilzackrisson.se/api/webhooks/1ad5e719-aef2-47f3-864f-a491bbae9f68

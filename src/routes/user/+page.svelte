@@ -19,30 +19,15 @@
 	let isAllowed = false;
 
 	/** @type {import('./$types').PageData} */
-	export let data: Data;
+	export let data: any;
 
 	onMount(async () => {
 		accountData = await account.get();
-		await checkIfAllowed();
-		if (!isAllowed) return;
+		if (data.allowed === false) return;
 
 		// await getRequestedUser(userId);
 		loggedIn = accountData.$id !== (null || undefined);
 	});
-
-	async function checkIfAllowed() {
-		const teams = new Teams(client);
-		teamsData = await teams.list();
-		teamsData.teams.forEach((team) => {
-			if (team.$id === 'admins') {
-				isAllowed = true;
-				return;
-			}
-		});
-		// if (accountData.$id === userId) {
-		// 	isAllowed = true;
-		// }
-	}
 
 	type Data = {
 		user: Models.Account<Models.Preferences>;
@@ -86,6 +71,6 @@
 	{/if}
 </main>
 
-<svelte:head>
-	<title>{data.user.name} - Filerr</title>
-</svelte:head>
+<!--<svelte:head>-->
+<!--	<title>{data.user.name} - Filerr</title>-->
+<!--</svelte:head>-->

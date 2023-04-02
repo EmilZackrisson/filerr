@@ -13,3 +13,5 @@ src/routes/settings/+page.svelte
 .env.production
 .env.development
 lambda/Notify/index.js
+
+*.db

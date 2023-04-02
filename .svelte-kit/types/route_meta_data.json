@@ -3,7 +3,16 @@
 	"/admin/dashboard": [
 		"src/routes/admin/dashboard/+page.server.ts"
 	],
-	"/user": [
-		"src/routes/user/+page.server.ts"
+	"/api/auth": [
+		"src/routes/api/auth/+server.ts"
+	],
+	"/api/request": [
+		"src/routes/api/request/+server.ts"
+	],
+	"/api/user": [
+		"src/routes/api/user/+server.ts"
+	],
+	"/auth": [
+		"src/routes/auth/+page.server.ts"
 	]
 }
